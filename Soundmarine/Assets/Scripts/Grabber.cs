@@ -25,13 +25,11 @@ public class Grabber : MonoBehaviour
 
                     if (hit.collider != null && hit.collider.CompareTag("drag"))
                     {
-                        
+
                         selectedObject = hit.collider.gameObject;
                         selectedObject.GetComponent<Collider>().enabled = false;
                         selectedObject.GetComponent<Rigidbody>().isKinematic = true;
                         selectedObject.transform.rotation = Quaternion.identity;
-
-                        Debug.Log("got something! " + selectedObject);
 
                         foreach (Transform child in selectedObject.transform)
                         {

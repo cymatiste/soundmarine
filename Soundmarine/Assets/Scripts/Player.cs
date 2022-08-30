@@ -11,8 +11,7 @@ public class Player : MonoBehaviour
     public List<GameObject> row2;
     private List<List<GameObject>> rows = new();
     public float loopSeconds = 20f;
-    public AudioSource beat1;
-    public AudioSource beat2;
+    public AudioSource beat;
 
     private float loopTimer = 0f;
     private int rowLength;
@@ -49,8 +48,7 @@ public class Player : MonoBehaviour
         int targetIndex = rowIndex;
         if ((loopTimer / loopSeconds) * rowLength >= targetIndex)
         {
-            //Debug.Log("*** " + rowIndex + ", " + loopTimer);
-            AudioSource beat = (rowIndex % 2 == 0) ? beat1 : beat2;
+            Debug.Log("*** " + rowIndex + ", " + loopTimer);
             beat.Play();
 
             foreach (List<GameObject> row in rows)
