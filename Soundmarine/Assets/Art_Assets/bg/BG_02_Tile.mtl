@@ -1,0 +1,199 @@
+newmtl BubblesSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.57 0.57 0.57
+Tf 1.00 1.00 1.00
+map_Kd 08_Bubbles.png
+Ni 1.00
+newmtl FGFSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.53 0.53 0.53
+Tf 1.00 1.00 1.00
+map_Kd 07_FG_F.png
+Ni 1.00
+newmtl FGSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.56 0.56 0.56
+Tf 1.00 1.00 1.00
+map_Kd 06_FG.png
+Ni 1.00
+newmtl MGFSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.57 0.57 0.57
+Tf 1.00 1.00 1.00
+map_Kd 05_MG_F.png
+Ni 1.00
+newmtl MGSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.58 0.58 0.58
+Tf 1.00 1.00 1.00
+map_Kd 04_MG.png
+Ni 1.00
+newmtl _BGSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.55 0.55 0.55
+Tf 1.00 1.00 1.00
+map_Kd 03_BG.png
+Ni 1.00
+newmtl _MountainSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.56 0.56 0.56
+Tf 1.00 1.00 1.00
+map_Kd 02_Mountain.png
+Ni 1.00
+newmtl crew02SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.50 0.50 0.50
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew03SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.53 0.53 0.53
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew04SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.52 0.52 0.52
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew05SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.53 0.53 0.53
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew06SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.51 0.51 0.51
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew07SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew08SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.50 0.50 0.50
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl crew09SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.55 0.55 0.55
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl dancer02SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.54 0.54 0.54
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl dancer03SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.58 0.58 0.58
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl dancer04SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.55 0.55 0.55
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl dancer05SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.57 0.57 0.57
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl fishSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.57 0.57 0.57
+Tf 1.00 1.00 1.00
+map_Kd Fish.png
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.50 0.50 0.50
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.61 0.61 0.61
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert3SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.52 0.52 0.52
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert4SG
+illum 4
+Kd 1.00 0.73 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert6SG
+illum 4
+Kd 0.90 0.00 0.31
+Ka 1.00 1.00 1.00
+Tf 0.74 0.74 0.74
+Ni 1.00
+newmtl lambert7SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.55 0.55 0.55
+Tf 1.00 1.00 1.00
+map_Kd 01_Plate.png
+Ni 1.00
+newmtl lambert8SG
+illum 4
+Kd 0.00 0.01 0.04
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl pasted__lambert4SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd exp_lambert4_BaseColor.png
+Ni 1.00
+newmtl pasted__lambert5SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 0.25 0.25 0.25
+map_Kd exp_lambert4_BaseColor.png
+Ni 1.00
+newmtl pasted__lambert6SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd meditation_front.png
+Ni 1.00
+newmtl pasted__lambert7SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd meditation_side.png
+Ni 1.00
