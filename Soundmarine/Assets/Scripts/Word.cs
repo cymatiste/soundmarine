@@ -20,7 +20,10 @@ public class Word : MonoBehaviour
     public void Init()
     {
         textObj = gameObject.GetComponentInChildren<TMPro.TextMeshPro>();
-        textObj.text = wordText;
+        if(textObj != null)
+        {
+            textObj.text = wordText;
+        }
         wordVo = gameObject.GetComponent<AudioSource>();
     }
     

@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
         rowLength = row1.Count;
 
         rows.Add(row1);
-        rows.Add(row2);
+        //rows.Add(row2);
 
         for (int i = 0; i < rowLength; i++)
         {
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
 
         if (word != null && !word.GetComponent<AudioSource>().isPlaying)
         {
-            Debug.Log("plz play:  " + word.wordText);
+            //Debug.Log("plz play:  " + word.wordText);
             word.GetComponent<AudioSource>().Play();
         }
     }
