@@ -4,10 +4,22 @@ public class Grabber : MonoBehaviour
 {
     private GameObject selectedObject;
 
+    public Animator dropEffect;
+
+    private void Start()
+    {
+        dropEffect.enabled = false;
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            //dropEffect.enabled = true;
+            //Debug.Log("click");
+            //dropEffect.Play("Drop", 0);
+
+
             if (selectedObject == null)
             {
                 // picking up a new object

@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/WordsTest.unity
-    guid: 7935df16689bc354f825bea5cbcfafec
+    path: Assets/Scenes/Level01_Rebuild.unity
+    guid: 888319baadc06d34585e92178ec84b39
   m_configObjects: {}
