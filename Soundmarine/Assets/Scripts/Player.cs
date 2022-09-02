@@ -47,20 +47,25 @@ public class Player : MonoBehaviour
         }
 
         int targetIndex = rowIndex;
-        if ((loopTimer / loopSeconds) * rowLength >= targetIndex)
+        if ((loopTimer / loopSeconds) * rowLength*2 >= targetIndex)
         {
             //Debug.Log("*** " + rowIndex + ", " + loopTimer);
             AudioSource beat = (rowIndex % 2 == 0) ? beat1 : beat2;
             beat.Play();
 
-            foreach (List<GameObject> row in rows)
+            if (rowIndex % 2 == 0)
             {
-                int prevIndex = (rowIndex == 0) ? rowLength - 1 : rowIndex - 1;
-                UnHighlight(row[prevIndex]);
+                int r = rowIndex / 2;
+                foreach (List<GameObject> row in rows)
+                {
+                    int prevIndex = (r == 0) ? rowLength - 1 : r - 1;
+                    UnHighlight(row[prevIndex]);
 
-                Highlight(row[rowIndex]);
-                PlayWordOn(row[rowIndex]);
+                    Highlight(row[r]);
+                    PlayWordOn(row[r]);
+                }
             }
+            
 
             rowIndex++;
         }
@@ -87,7 +92,7 @@ public class Player : MonoBehaviour
     }
     private void UnHighlight(GameObject g)
     {
-        Color color = new Color(1f, 1f, 1f, 1f);
+        Color color = new Color(1f, 0.1f, 0f, 1f);
         g.GetComponent<Renderer>().material.SetColor("_Color", color);
         //Debug.Log("UnHighlight " + g);
     }

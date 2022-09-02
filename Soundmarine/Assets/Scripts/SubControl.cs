@@ -16,7 +16,7 @@ public class SubControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.x > -7f)
+        if(transform.position.x > -21f)
         {
             transform.position = new Vector3(transform.position.x-speed, transform.position.y, transform.position.z);
         }
