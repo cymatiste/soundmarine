@@ -6,6 +6,7 @@ public class SubControl : MonoBehaviour
 {
 
     public float speed = 0.00001f;
+    public Grabber grabber;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +19,10 @@ public class SubControl : MonoBehaviour
     {
         if(transform.position.x > -21f)
         {
-            transform.position = new Vector3(transform.position.x-speed, transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x-speed*grabber.NumWordsPlaced(), transform.position.y, transform.position.z);
+        } else
+        {
+            transform.position = new Vector3(-2.6f, transform.position.y, transform.position.z);
         }
     }
 }

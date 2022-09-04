@@ -4,28 +4,22 @@ using UnityEngine;
 
 public class Generator : MonoBehaviour
 {
-
-    public List<string> words;
-    public List<AudioClip> clips;
-    public GameObject wordPrefab;
-
+    public List<GameObject> fishPrefabs;
 
     // Start is called before the first frame update
     void Start()
     {
-        for(int i=0; i<words.Count; i++)
+        SpawnFish();
+    }
+
+    public void SpawnFish()
+    {
+        for (int i = 0; i < fishPrefabs.Count; i++)
         {
-            GameObject newWord = Instantiate(wordPrefab, new Vector3(UnityEngine.Random.Range(-3f, 3f), UnityEngine.Random.Range(25f, 35f), UnityEngine.Random.Range(-15f, 25f)), Quaternion.identity);
-            newWord.GetComponent<Word>().wordText = words[i];
-            newWord.GetComponent<AudioSource>().clip = clips[i];
-            newWord.GetComponent<Word>().Init();
-            Debug.Log("instantiated " + newWord.GetComponent<Word>().wordText);
+            //GameObject newFish = Instantiate(fishPrefabs[Random.Range(0,fishPrefabs.Count)]);
+            GameObject newFish = Instantiate(fishPrefabs[i], GameObject.Find("fish").transform);
+            newFish.GetComponent<Fish>().Spawn(-1);
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

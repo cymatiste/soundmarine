@@ -3,6 +3,7 @@ using UnityEngine;
 public class Grabber : MonoBehaviour
 {
     private GameObject selectedObject;
+    private int wordsPlaced = 0;
 
     public Animator dropEffect;
 
@@ -63,6 +64,8 @@ public class Grabber : MonoBehaviour
                         {
                             selectedObject.GetComponent<Word>().GetSpot().ClearWord();
                             selectedObject.GetComponent<Word>().ClearSpot();
+                            wordsPlaced--;
+                            Debug.Log("words placed: " + wordsPlaced);
                         }
 
                         //stop looking! we don't want to activate every grabbable thing in this line of sight, just the first one.
@@ -121,6 +124,7 @@ public class Grabber : MonoBehaviour
                                 prevWord.GetComponent<IdleWobble>().enabled = true;
                                 prevWord.GetComponent<IdleWobble>().ResetPos();
                             }
+                            wordsPlaced--;
                         }
                        
                        dropSpotObj.GetComponent<DropSpot>().SetWord(selectedObject.GetComponent<Word>());
@@ -128,6 +132,8 @@ public class Grabber : MonoBehaviour
 
                         droppedOnTarget = true;
                         selectedObject.GetComponent<AudioSource>().Play();
+                        wordsPlaced++;
+                        Debug.Log("words placed: " + wordsPlaced);
                     }
                 }
             }
@@ -173,6 +179,10 @@ public class Grabber : MonoBehaviour
    
     }
 
+    public int NumWordsPlaced()
+    {
+        return wordsPlaced;
+    }
     private RaycastHit CastRay()
     {
         Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
