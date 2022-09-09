@@ -3,7 +3,6 @@ using UnityEngine;
 public class Grabber : MonoBehaviour
 {
     private GameObject selectedObject;
-    private int wordsPlaced = 0;
 
     public Animator dropEffect;
 
@@ -59,13 +58,12 @@ public class Grabber : MonoBehaviour
                             }
                         }
 
-
-                        if (selectedObject.GetComponent<Word>().GetSpot() != null)
+                        Word selectedWord = selectedObject.GetComponent<Word>();
+                        if (selectedWord.GetSpot() != null)
                         {
-                            selectedObject.GetComponent<Word>().GetSpot().ClearWord();
-                            selectedObject.GetComponent<Word>().ClearSpot();
-                            wordsPlaced--;
-                            Debug.Log("words placed: " + wordsPlaced);
+                            
+                            selectedWord.GetSpot().ClearWord(selectedWord, false);
+                            selectedWord.ClearSpot();
                         }
 
                         //stop looking! we don't want to activate every grabbable thing in this line of sight, just the first one.
@@ -104,36 +102,14 @@ public class Grabber : MonoBehaviour
                         // dropping
 
                         GameObject dropSpotObj = hits[i].collider.gameObject;
-                        Debug.Log("Dropping on " +dropSpotObj.name);
-                        selectedObject.transform.position = new Vector3(dropSpotObj.transform.position.x, dropSpotObj.transform.position.y, dropSpotObj.transform.position.z -0.002f);
-                        selectedObject.transform.rotation = dropSpotObj.transform.rotation;
-
-
-                        if (dropSpotObj.GetComponent<DropSpot>().GetWord() != null)
-                        {
-                            GameObject prevWord = dropSpotObj.GetComponent<DropSpot>().GetWord().gameObject;
-
-                            dropSpotObj.GetComponent<DropSpot>().GetWord().ClearSpot();
-                            if (dropSpotObj.GetComponent<Rigidbody>() != null)
-                            {
-                                prevWord.GetComponent<Rigidbody>().isKinematic = false;
-
-                            }
-                            if (prevWord.GetComponent<IdleWobble>() != null)
-                            {
-                                prevWord.GetComponent<IdleWobble>().enabled = true;
-                                prevWord.GetComponent<IdleWobble>().ResetPos();
-                            }
-                            wordsPlaced--;
-                        }
-                       
-                       dropSpotObj.GetComponent<DropSpot>().SetWord(selectedObject.GetComponent<Word>());
-                       selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
+                        Debug.Log("Dropping "+ selectedObject.GetComponent<Word>().wordText+" on " +dropSpotObj.name+" at "+ hits[i].point);
+                        
+                        dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), hits[i].point);
+                        selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
 
                         droppedOnTarget = true;
+                        selectedObject.GetComponent<Word>().UnHighlight();
                         selectedObject.GetComponent<AudioSource>().Play();
-                        wordsPlaced++;
-                        Debug.Log("words placed: " + wordsPlaced);
                     }
                 }
             }
@@ -144,6 +120,7 @@ public class Grabber : MonoBehaviour
                 if (selectedObject.GetComponent<IdleWobble>() != null)
                 {
                     selectedObject.GetComponent<IdleWobble>().enabled = true;
+                    selectedObject.GetComponent<IdleWobble>().ResetPos();
                 }
             }
             if (selectedObject.GetComponent<Rigidbody>() != null)
@@ -179,10 +156,6 @@ public class Grabber : MonoBehaviour
    
     }
 
-    public int NumWordsPlaced()
-    {
-        return wordsPlaced;
-    }
     private RaycastHit CastRay()
     {
         Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
