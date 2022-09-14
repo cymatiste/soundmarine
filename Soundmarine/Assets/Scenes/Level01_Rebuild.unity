@@ -5040,7 +5040,7 @@ MonoBehaviour:
   submarineLoop: {fileID: 0}
   instrument_puzzle1:
   - {fileID: 8300000, guid: c140023c1d48ad0448229513f259d7f0, type: 3}
-  - {fileID: 8300000, guid: 00cb552642dd2af4c92df7c89d9d22cf, type: 3}
+  - {fileID: 8300000, guid: 6786c168138d38944884e0854423935b, type: 3}
   - {fileID: 8300000, guid: e72c39127e210f946902ccda0df27c40, type: 3}
   - {fileID: 8300000, guid: d4d86cec0aad7674dbd873f57e9647e1, type: 3}
   - {fileID: 8300000, guid: 6294df5406f659f4992d580b914fd077, type: 3}
