@@ -652,7 +652,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Liquid 09_#[512,288]_13: 359658314
-      Liquid 09_#[512,288]_17: -274581896
+      Liquid 09_#[512,288]_18: 1249848957
       Liquid 09_#[512,288]_2: 1452518488
       Liquid 09_#[512,288]_12: 888727684
       Liquid 09_#[512,288]_16: -6506959
@@ -671,11 +671,11 @@ TextureImporter:
       Liquid 09_#[512,288]_3: 17002496
       Liquid 09_#[512,288]_14: 1677764798
       Liquid 09_#[512,288]_21: -456973054
-      Liquid 09_#[512,288]_5: 806395126
-      Liquid 09_#[512,288]_18: 1249848957
-      Liquid 09_#[512,288]_19: -1601131978
       Liquid 09_#[512,288]_1: -1196129314
       Liquid 09_#[512,288]_0: 133463265
+      Liquid 09_#[512,288]_19: -1601131978
+      Liquid 09_#[512,288]_5: 806395126
+      Liquid 09_#[512,288]_17: -274581896
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

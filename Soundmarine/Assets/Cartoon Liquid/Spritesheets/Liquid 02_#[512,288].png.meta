@@ -651,7 +651,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Liquid 02_#[512,288]_9: -1731320789
+      Liquid 02_#[512,288]_16: 173864351
       Liquid 02_#[512,288]_6: 2118485035
       Liquid 02_#[512,288]_13: -1670360701
       Liquid 02_#[512,288]_2: -1519891017
@@ -674,8 +674,8 @@ TextureImporter:
       Liquid 02_#[512,288]_22: 1841079015
       Liquid 02_#[512,288]_23: -152701816
       Liquid 02_#[512,288]_3: 2102014721
-      Liquid 02_#[512,288]_16: 173864351
       Liquid 02_#[512,288]_19: 672112681
+      Liquid 02_#[512,288]_9: -1731320789
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

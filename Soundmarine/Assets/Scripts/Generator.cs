@@ -17,6 +17,7 @@ public class Generator : MonoBehaviour
     void Start()
     {
         SpawnFish();
+
     }
 
     public void SpawnFish()
@@ -29,7 +30,7 @@ public class Generator : MonoBehaviour
             float schoolX = Random.Range(LeftEdge, RightEdge);
             float schoolY = Random.Range(TopEdge, BottomEdge);
             float schoolZ = Random.Range(FrontEdge, BackEdge);
-            float schoolXSpread = Mathf.Abs(RightEdge - LeftEdge) / 40;
+            float schoolXSpread = Mathf.Abs(RightEdge - LeftEdge) / 10;// 40;
             float schoolYSpread = Mathf.Abs(TopEdge - BottomEdge) / 10;
             float schoolZSpread = Mathf.Abs(FrontEdge - BackEdge) / 20;
 
