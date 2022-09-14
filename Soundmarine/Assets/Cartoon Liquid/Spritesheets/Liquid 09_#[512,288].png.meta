@@ -69,9 +69,9 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
+    textureCompression: 2
+    compressionQuality: 100
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
@@ -90,6 +90,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -639,11 +651,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Liquid 09_#[512,288]_17: -274581896
+      Liquid 09_#[512,288]_13: 359658314
+      Liquid 09_#[512,288]_18: 1249848957
       Liquid 09_#[512,288]_2: 1452518488
       Liquid 09_#[512,288]_12: 888727684
       Liquid 09_#[512,288]_16: -6506959
-      Liquid 09_#[512,288]_18: 1249848957
       Liquid 09_#[512,288]_20: -417982635
       Liquid 09_#[512,288]_22: 205737816
       Liquid 09_#[512,288]_10: 1142738665
@@ -663,7 +675,7 @@ TextureImporter:
       Liquid 09_#[512,288]_0: 133463265
       Liquid 09_#[512,288]_19: -1601131978
       Liquid 09_#[512,288]_5: 806395126
-      Liquid 09_#[512,288]_13: 359658314
+      Liquid 09_#[512,288]_17: -274581896
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
