@@ -103,7 +103,8 @@ public class Grabber : MonoBehaviour
 
                         GameObject dropSpotObj = hits[i].collider.gameObject;
                         Debug.Log("Dropping "+ selectedObject.GetComponent<Word>().wordText+" on " +dropSpotObj.name+" at "+ hits[i].point);
-                        
+
+                        Debug.Log("is this about " + hits[i].point + " ? ");
                         dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), hits[i].point);
                         selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
 

@@ -20,8 +20,7 @@ public class VolcanoSequence : MonoBehaviour
     public GameObject inBtn;
     public GameObject outBtn;
 
-    private bool breathingIn = false;
-    private bool breathingOut = false;
+    private Coroutine queuedBreath;
 
     private UnityEngine.Audio.AudioMixerGroup pitchBendGroup;
 
@@ -50,32 +49,52 @@ public class VolcanoSequence : MonoBehaviour
         inBtn.GetComponent<Image>().color = new Color(0f, 0f, 1f*(inBreath.time/inBreath.clip.length));
         outBtn.GetComponent<Image>().color = new Color(0f, 0f, 1f * (outBreath.time/outBreath.clip.length));
 
-        Debug.Log(inBreath.time);
+        //Debug.Log(inBreath.time+" / "+outBreath.time);
     }
+
 
     public void BreatheIn()
     {
-        Debug.Log("in");
+        Debug.Log("in, "+outBreath.time+" ---> ");
         float delay = 0f;
         if (outBreath.isPlaying && outBreath.time < outBreath.clip.length - 0.5f)
         {
             outBreath.time = outBreath.clip.length - 0.5f;
             delay = 0.5f;
         }
-        inBreath.PlayDelayed(delay);
-        breathingIn = true;
+        StopAllCoroutines();
+        Debug.Log(outBreath.time);
+        queuedBreath = StartCoroutine(BreatheInAfter(delay));
     }
     public void BreatheOut()
     {
-        Debug.Log("out");
+        Debug.Log("out, " + inBreath.time + " ---> ");
         float delay = 0f;
         if (inBreath.isPlaying && inBreath.time < inBreath.clip.length - 0.5f)
         {
             inBreath.time = inBreath.clip.length - 0.5f;
             delay = 0.5f;
         }
-        outBreath.PlayDelayed(delay);
-        breathingOut = true;
+        StopAllCoroutines();
+        Debug.Log(inBreath.time);
+        queuedBreath = StartCoroutine(BreatheOutAfter(delay));
+    }
+
+    private IEnumerator BreatheInAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        inBreath.time = 0f;
+        inBreath.Play();
+        StopAllCoroutines();
+        queuedBreath = StartCoroutine(BreatheOutAfter(inBreath.clip.length));
+    }
+    private IEnumerator BreatheOutAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        outBreath.time = 0f;
+        outBreath.Play();
+        StopAllCoroutines();
+        queuedBreath = StartCoroutine(BreatheInAfter(outBreath.clip.length));
     }
 
     public void Exit()

@@ -5,23 +5,47 @@ using UnityEngine.EventSystems;
 
 public class DropSpot : MonoBehaviour
 {
+    public int maxWords = 1;
+
     private List<Word> words = new List<Word>();
+    private List<GameObject> dots = new List<GameObject>();
+
     private float spotWidth;
     private float spotLeftEdgeX;
     private float combinedWordWidth;
+    private float combinedDotWidth;
     private float minSpace = 0.003f;
 
+    private Vector3 centerDotPos;
 
     private void Start()
     {
         spotWidth = WidthOf(gameObject);
         spotLeftEdgeX = transform.localPosition.x - spotWidth / 2;
+
+        centerDotPos = new Vector3(transform.localPosition.x,  transform.localPosition.y-0.0015f, transform.localPosition.z - 0.000001f);
+
+        GameObject spots = GameObject.Find("spots");
+        for (int i=0; i<maxWords; i++)
+        {
+            GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
+            dots.Add(dot);
+            dot.transform.localScale = 0.0015f * Vector3.one;
+            dot.transform.localPosition = centerDotPos;
+            dot.transform.parent = spots.transform;
+        }
+        combinedDotWidth = WidthOf(dots[0])* maxWords;
+
+        SpaceEvenly(dots, centerDotPos, combinedDotWidth);
     }
 
     public void PlaceWordAt(Word word, Vector3 clickPos)
     {
 
         Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.002f);
+
+        DropDot closestDot = ClosestObjectTo(clickPos, dots).GetComponent<DropDot>();
+        closestDot.SetObj(word.gameObject);
         
         // first determine where the new word belongs in the order on this row
         int targetIndex = 0;
@@ -32,6 +56,7 @@ public class DropSpot : MonoBehaviour
                 targetIndex++;
             }
         }
+
         if (!words.Contains(word))
         {
             if (!RoomFor(word))
@@ -41,28 +66,21 @@ public class DropSpot : MonoBehaviour
             words.Insert(targetIndex, word);
             combinedWordWidth += WidthOf(word.gameObject);
         }
+
+        List<GameObject> wordObjs = new();
         for (int i = 0; i < words.Count; i++)
         {
             Debug.Log("   "+i + ":  " + words[i].wordText);
+            wordObjs.Add(words[i].gameObject);
         }
-            
+
 
         // and then space all words out evenly.
-        float spaceBetween = (spotWidth - combinedWordWidth)/(words.Count+1);
-
-        //Debug.Log("spaceBetween: " + spaceBetween);
-
-        for (int i = 0; i < words.Count; i++)
-        {
-
-            float neighbourEdgeX = (i==0) ? spotLeftEdgeX : words[i - 1].transform.localPosition.x + WidthOf(words[i - 1].gameObject) / 2;
-            float newTargetX = neighbourEdgeX + spaceBetween + WidthOf(words[i].gameObject)/ 2;
-
-            Debug.Log("word "+i+", " + words[i].wordText + ":  neighbourEdgeX: "+neighbourEdgeX+", WidthOf word i: "+WidthOf(words[i].gameObject));
 
 
-            words[i].transform.localPosition = new Vector3(newTargetX, targetPos.y, targetPos.z);
-        }
+
+        //SpaceEvenly(wordObjs, targetPos, combinedWordWidth);
+        SpaceAllEvenly(targetPos);
 
         word.transform.rotation = transform.rotation;
 
@@ -75,12 +93,24 @@ public class DropSpot : MonoBehaviour
         combinedWordWidth -= WidthOf(w.gameObject);
         w.ClearSpot();
 
+        foreach (GameObject d in dots)
+        {
+            if (d.GetComponent<DropDot>().GetObj() == w.gameObject)
+            {
+                d.GetComponent<DropDot>().SetObj(null);
+            }
+        }
+
+        SpaceAllEvenly(w.transform.localPosition);
+
         if (andReset && w.gameObject.GetComponent<IdleWobble>() != null)
         {
             w.gameObject.GetComponent<IdleWobble>().enabled = true;
             w.gameObject.GetComponent<IdleWobble>().ResetPos();
         }
+
         
+       
     }
 
     public List<Word> GetWords()
@@ -95,7 +125,7 @@ public class DropSpot : MonoBehaviour
 
     private bool RoomFor(Word w)
     {
-        return (combinedWordWidth + minSpace*words.Count + WidthOf(w.gameObject) < spotWidth);
+        return ((words.Count < maxWords) && (combinedWordWidth + minSpace*words.Count + WidthOf(w.gameObject) < spotWidth));
     }
 
     private float WidthOf(GameObject g)
@@ -123,18 +153,83 @@ public class DropSpot : MonoBehaviour
 
     private Word ClosestWordTo(Vector3 clickPos)
     {
-
-        float closestDist = 9999f;
-        Word closestWord = null;
+        List<GameObject> wordObjects = new();
         foreach(Word w in words)
         {
-            float dist = Mathf.Abs(w.transform.position.x - clickPos.x);
-            if(dist < closestDist)
+            wordObjects.Add(w.gameObject);
+        }
+        return ClosestObjectTo(clickPos, wordObjects).GetComponent<Word>();
+    }
+
+    private GameObject ClosestObjectTo(Vector3 clickPos, List<GameObject> objects )
+    {
+
+        float closestDist = 9999f;
+        GameObject closestObj = null;
+        foreach (GameObject o in objects)
+        {
+            float dist = Mathf.Abs(o.transform.position.x - clickPos.x);
+            if (dist < closestDist)
             {
                 closestDist = dist;
-                closestWord = w;
+                closestObj = o;
             }
         }
-        return closestWord;
+        return closestObj;
+    }
+
+
+    private void SpaceEvenly(List<GameObject> objects, Vector3 targetPos, float combinedObjectsWidth)
+    {
+
+        float spaceBetween = (spotWidth - combinedObjectsWidth) / (objects.Count + 1);
+
+        Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
+        for (int i = 0; i < objects.Count; i++)
+        {
+
+            float neighbourEdgeX = (i == 0) ? spotLeftEdgeX : objects[i - 1].transform.localPosition.x + WidthOf(objects[i - 1]) / 2;
+            float newTargetX = neighbourEdgeX + spaceBetween + WidthOf(objects[i]) / 2;
+
+            objects[i].transform.localPosition = new Vector3(newTargetX, targetPos.y, targetPos.z);
+
+            Debug.Log("placed " + objects[i].name + " at " + objects[i].transform.localPosition);
+        }
+    }
+
+    private void SpaceAllEvenly(Vector3 targetPos)
+    {
+        List<GameObject> widest = new();
+
+        float combinedWidth = 0f;
+        for (int i = 0; i < dots.Count; i++)
+        {
+            GameObject placedObj = dots[i].GetComponent<DropDot>().GetObj();
+            if (placedObj == null)
+            {
+                combinedWidth += WidthOf(dots[i]);
+                widest.Add(dots[i]);
+            } else
+            {
+                combinedWidth += WidthOf(placedObj);
+                widest.Add(placedObj);
+            }
+        }
+
+        float spaceBetween = (spotWidth - combinedWidth) / (dots.Count + 1);
+
+        for (int i = 0; i < dots.Count; i++)
+        {
+            
+            float neighbourEdgeX = (i == 0) ? spotLeftEdgeX : widest[i - 1].transform.localPosition.x + WidthOf(widest[i - 1]) / 2;
+            float newTargetX = neighbourEdgeX + spaceBetween + WidthOf(widest[i]) / 2;
+
+            if (widest[i] != dots[i])
+            {
+                widest[i].transform.localPosition = new Vector3(newTargetX, targetPos.y, targetPos.z);
+            } 
+            dots[i].transform.localPosition = new Vector3(newTargetX, centerDotPos.y, centerDotPos.z);
+
+        }
     }
 }
