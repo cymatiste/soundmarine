@@ -7,12 +7,14 @@ public class IdleWobble : MonoBehaviour
     public Transform wobbler;
     public bool vertical = true;
     public bool horizontal = true;
+    public bool z = false;
     public float amount = 0.002f;
     public float speed = 1;
 
     private Vector3 centre;
     private int xDir;
     private int yDir;
+    private int zDir;
     private float amountVariation;
     private float speedVariation;
 
@@ -22,6 +24,7 @@ public class IdleWobble : MonoBehaviour
         centre = wobbler.localPosition;
         xDir = Random.Range(0, 1f) > 0.5f ? 1 : -1;
         yDir = Random.Range(0, 1f) > 0.5f ? 1 : -1;
+        zDir = Random.Range(0, 1f) > 0.5f ? 1 : -1;
         amountVariation = Random.Range(0.5f, 1.5f);
         speedVariation = Random.Range(1, 5f);
     }
@@ -33,11 +36,17 @@ public class IdleWobble : MonoBehaviour
         float workingSpeed = speed * speedVariation;
         float xWobble = horizontal ? xDir * workingAmt * Mathf.Cos(Time.time * workingSpeed) : 0;
         float yWobble = vertical ? yDir * workingAmt * Mathf.Sin(Time.time * workingSpeed) : 0;
-        wobbler.localPosition = new Vector3(centre.x + xWobble, centre.y + yWobble, centre.z);
+        float zWobble = z ? zDir * workingAmt * Mathf.Cos(Time.time * workingSpeed) : 0;
+        wobbler.localPosition = new Vector3(centre.x + xWobble, centre.y + yWobble, centre.z + zWobble) ;
     }
 
     public void ResetPos()
     {
         wobbler.localPosition = centre;
+    }
+
+    public void SeekResetPos(float tweenTime)
+    {
+        LeanTween.move(wobbler.gameObject, centre, tweenTime);
     }
 }

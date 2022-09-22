@@ -70,7 +70,7 @@ public class DropSpot : MonoBehaviour
         List<GameObject> wordObjs = new();
         for (int i = 0; i < words.Count; i++)
         {
-            Debug.Log("   "+i + ":  " + words[i].wordText);
+            //Debug.Log("   "+i + ":  " + words[i].wordText);
             wordObjs.Add(words[i].gameObject);
         }
 
@@ -184,7 +184,7 @@ public class DropSpot : MonoBehaviour
 
         float spaceBetween = (spotWidth - combinedObjectsWidth) / (objects.Count + 1);
 
-        Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
+        //Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
         for (int i = 0; i < objects.Count; i++)
         {
 
@@ -193,7 +193,7 @@ public class DropSpot : MonoBehaviour
 
             objects[i].transform.localPosition = new Vector3(newTargetX, targetPos.y, targetPos.z);
 
-            Debug.Log("placed " + objects[i].name + " at " + objects[i].transform.localPosition);
+            //Debug.Log("placed " + objects[i].name + " at " + objects[i].transform.localPosition);
         }
     }
 

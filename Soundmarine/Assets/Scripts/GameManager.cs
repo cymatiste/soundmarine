@@ -16,8 +16,11 @@ public class GameManager : MonoBehaviour
 
     public bool showBall = false;
 
-    private Vector3 volcanoShuttlePos = new Vector3(0, -5.76f, -0.67f);
-    private Vector3 bathyspherePos = new Vector3(0,-2.6f,-0.67f);
+    private Vector3 volcanoShuttlePos = new Vector3(0, -4.5f, -0.67f);
+    // this one for straight jumps:
+    //private Vector3 bathyspherePos = new Vector3(0,-2.6f,-0.67f);
+    // this one for LeanTween (???):
+    private Vector3 bathyspherePos = new Vector3(0,-2.63f,-0.67f);
     private Vector3 shuttleCameraPos = new Vector3(0, 0.01f, -0.67f);
 
    
@@ -48,20 +51,31 @@ public class GameManager : MonoBehaviour
             
         }
 
+        if (showBall)
+        {
+            //Camera.main.transform.localPosition = bathyspherePos;
+
+            Camera.main.transform.localPosition = volcanoShuttlePos;
+            LeanTween.moveY(Camera.main.gameObject, bathyspherePos.y, 10f).setEase(LeanTweenType.easeOutCirc).setOnComplete(ShowButtons);
+            
+        }
+        else
+        {
+            Camera.main.transform.localPosition = shuttleCameraPos;
+        }
+
     }
 
+    public void ShowButtons()
+    {
+        gameObject.GetComponent<VolcanoSequence>().ShowButtons();
+    }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (showBall)
-        {
-            Camera.main.transform.localPosition = bathyspherePos;
-        } else
-        {
-            Camera.main.transform.localPosition = shuttleCameraPos;
-        }
+        
     }
 
 
