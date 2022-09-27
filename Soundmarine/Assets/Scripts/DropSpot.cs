@@ -5,8 +5,7 @@ using UnityEngine.EventSystems;
 
 public class DropSpot : MonoBehaviour
 {
-    public int maxWords = 1;
-
+    public List<string> targetWords;
     private List<Word> words = new List<Word>();
     private List<GameObject> dots = new List<GameObject>();
 
@@ -26,15 +25,16 @@ public class DropSpot : MonoBehaviour
         centerDotPos = new Vector3(transform.localPosition.x,  transform.localPosition.y-0.0015f, transform.localPosition.z - 0.000001f);
 
         GameObject spots = GameObject.Find("spots");
-        for (int i=0; i<maxWords; i++)
+        for (int i=0; i< targetWords.Count; i++)
         {
             GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
             dots.Add(dot);
             dot.transform.localScale = 0.0015f * Vector3.one;
             dot.transform.localPosition = centerDotPos;
             dot.transform.parent = spots.transform;
+            dot.GetComponent<DropDot>().SetTargetWord(targetWords[i]);
         }
-        combinedDotWidth = WidthOf(dots[0])* maxWords;
+        combinedDotWidth = WidthOf(dots[0])* targetWords.Count;
 
         SpaceEvenly(dots, centerDotPos, combinedDotWidth);
     }
@@ -45,7 +45,27 @@ public class DropSpot : MonoBehaviour
         Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.002f);
 
         DropDot closestDot = ClosestObjectTo(clickPos, dots).GetComponent<DropDot>();
+        
+ 
+        if(closestDot.GetObj() != null)
+        {
+            ClearWord(closestDot.GetObj().GetComponent<Word>(), true);
+        }
+
         closestDot.SetObj(word.gameObject);
+        if (closestDot.Correct())
+        {
+            // give + feedback
+            // e.g. word.play particle effect
+            // word move accordingly
+            word.SetMood(1);
+            // somebody add fish
+        } else
+        {
+            // give - feedback
+            // 
+            word.SetMood(0);
+        }
         
         // first determine where the new word belongs in the order on this row
         int targetIndex = 0;
@@ -95,9 +115,18 @@ public class DropSpot : MonoBehaviour
 
         foreach (GameObject d in dots)
         {
-            if (d.GetComponent<DropDot>().GetObj() == w.gameObject)
+            DropDot dd = d.GetComponent<DropDot>();
+            if (dd.GetObj() == w.gameObject)
             {
-                d.GetComponent<DropDot>().SetObj(null);
+                if (dd.Correct())
+                {
+                    // adjust my overall correctness downward (less fish)
+                } else
+                {
+                    // any negative effects here that need to be undone?
+                    // stop any word shaking etc.
+                }
+                dd.SetObj(null);
             }
         }
 
@@ -125,7 +154,7 @@ public class DropSpot : MonoBehaviour
 
     private bool RoomFor(Word w)
     {
-        return ((words.Count < maxWords) && (combinedWordWidth + minSpace*words.Count + WidthOf(w.gameObject) < spotWidth));
+        return ((words.Count < targetWords.Count) && (combinedWordWidth + minSpace*words.Count + WidthOf(w.gameObject) < spotWidth));
     }
 
     private float WidthOf(GameObject g)

@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class DropDot : MonoBehaviour
 {
-
     private GameObject droppedObj = null;
+    private string targetWord;
+
+    public void SetTargetWord(string tw)
+    {
+        targetWord = tw;
+    }
 
     public void SetObj(GameObject g)
     {
@@ -14,5 +19,9 @@ public class DropDot : MonoBehaviour
     public GameObject GetObj()
     {
         return droppedObj;
+    }
+    public bool Correct()
+    {
+        return droppedObj.GetComponent<Word>().wordText == targetWord;
     }
 }

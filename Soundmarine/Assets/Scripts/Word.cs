@@ -15,6 +15,10 @@ public class Word : MonoBehaviour
     private Color offColor = new Color(1f, 1f, 1f, 1f);
     private Color onColor = new Color(1.5f, 1.5f, 1f, 1f);
 
+    private int HAPPIEST = 1;
+    private int UNHAPPY = 0;
+    private int mood = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,12 +35,47 @@ public class Word : MonoBehaviour
         wordVo = gameObject.GetComponent<AudioSource>();
         wordScale = transform.localScale;
     }
-    
+
+    public void SetMood(int newMood)
+    {
+        
+        if (newMood == HAPPIEST && mood != HAPPIEST)
+        {
+            LeanTween.cancelAll();
+            //BounceUp();
+        }
+        mood = newMood;
+        
+    }
+
+    private void BounceUp()
+    {
+        LeanTween.moveLocalY(gameObject, transform.localPosition.y + 0.001f, 0.5f).setEase(LeanTweenType.easeInOutBack).setOnComplete(BounceDown);
+        //LeanTween.scaleY(gameObject, transform.localScale.y*1.1f, 0.1f);
+    }
+
+    private void BounceIfHappy()
+    {
+        if (mood == HAPPIEST)
+        {
+            BounceUp();
+
+        }
+    }
+
+    private void BounceDown()
+    {
+        LeanTween.moveLocalY(gameObject, transform.localPosition.y - 0.001f, 0.3f).setEase(LeanTweenType.easeInCirc).setOnComplete(BounceIfHappy);
+    }
+
+    private void Fidget()
+    {
+
+    }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void Speak()

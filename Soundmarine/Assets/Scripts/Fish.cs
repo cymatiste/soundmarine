@@ -11,6 +11,9 @@ public class Fish : MonoBehaviour
     private float baselineY;
     private float baselineZ;
     private float sineAdjust;
+    private float yVariance;
+    private float tiltVariance;
+    private float tiltAdjust;
     
     // Start is called before the first frame update
     void Start()
@@ -19,7 +22,10 @@ public class Fish : MonoBehaviour
         baselineY = transform.position.y;
         baselineZ = transform.position.z;
         sineAdjust = Random.Range(0f,5f);
-
+        yVariance = Random.Range(0.1f, 0.3f);
+        tiltVariance = 0.2f;// Random.Range(5f, 10f);
+        tiltAdjust = Random.Range(0f, 5f);
+    
     }
 
     public void SpawnAt(float spawnX, float spawnY, float spawnZ, int spawnDir, float spawnSpeed)
@@ -44,7 +50,8 @@ public class Fish : MonoBehaviour
             transform.position = new Vector3(LeftEdge, transform.position.y, transform.position.z);
         } else      
         {
-            transform.position = new Vector3(transform.position.x + speed*dir, baselineY + 0.1f*Mathf.Sin(transform.position.x+sineAdjust), transform.position.z + 0.0001f * Mathf.Sin(transform.position.x));
+            transform.position = new Vector3(transform.position.x + speed*dir, baselineY + yVariance*Mathf.Sin(transform.position.x+sineAdjust), transform.position.z + 0.0001f * Mathf.Sin(transform.position.x));
+            transform.Rotate(0f, tiltVariance * Mathf.Sin(Time.time + tiltAdjust), 0f);
         }
     }
 }
