@@ -6,6 +6,10 @@ public class Grabber : MonoBehaviour
 
     public Animator dropEffect;
 
+    public AudioSource grabSound;
+    public AudioSource dropSound;
+    public AudioSource softGrabSound;
+
     private bool selectedWasCorrect = false;
 
     private void Start()
@@ -41,6 +45,8 @@ public class Grabber : MonoBehaviour
                     if (hit.collider != null && hit.collider.CompareTag("drag"))
                     {
                         //Debug.Log("Picking up: " + selectedObject);
+                        
+
                         selectedObject = hit.collider.gameObject;
                         selectedObject.GetComponent<Collider>().enabled = false;
                         if(selectedObject.GetComponent<Rigidbody>()!= null)
@@ -66,9 +72,13 @@ public class Grabber : MonoBehaviour
                         Word selectedWord = selectedObject.GetComponent<Word>();
                         if (selectedWord.GetSpot() != null)
                         {
-                            
+                            softGrabSound.Play();
+
                             selectedWord.GetSpot().ClearWord(selectedWord, false, false);
                             selectedWord.ClearSpot();
+                        } else
+                        {
+                            grabSound.Play();
                         }
 
                         //stop looking! we don't want to activate every grabbable thing in this line of sight, just the first one.
@@ -125,6 +135,7 @@ public class Grabber : MonoBehaviour
                         droppedOnTarget = true;
                         selectedObject.GetComponent<Word>().UnHighlight();
                         selectedObject.GetComponent<AudioSource>().Play();
+                        dropSound.Play();
                     }
                 }
             }

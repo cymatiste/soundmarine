@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
         if (!startInVolcano)
         {
+            shuttleLoop.volume = 0f;
             shuttleLoop.Play();
             volcanoSequence.Exit();
             volcanoSequence.enabled = false;
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
 
         if (startInVolcano)
         {
+            volcanoLoop.Play();
             dancerSeat.SetActive(false);
             Camera.main.transform.localPosition = volcanoShuttlePos;
             LeanTween.moveY(Camera.main.gameObject, bathyspherePos.y, 10f).setEase(LeanTweenType.easeOutCirc).setOnComplete(ShowButtons);
@@ -68,9 +70,11 @@ public class GameManager : MonoBehaviour
 
     public void PanToShuttle()
     {
-        volcanoLoop.Play();
+        shuttleLoop.volume = 0f;
+        shuttleLoop.Play();
         volcanoSequence.Exit();
         LeanTween.moveLocal(Camera.main.gameObject, shuttleCameraPos, 10f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(SetUpShuttlePuzzle);
+        LeanTween.rotateY(Camera.main.gameObject, -1.34f, 10f);
         float ballTargetY = diverBall.transform.position.y + (shuttleCameraPos.y - bathyspherePos.y);
         LeanTween.moveLocal(diverBall, dockPos, 10f).setEase(LeanTweenType.easeInOutQuad);
     }
@@ -79,8 +83,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("do it");
         Camera.main.transform.localPosition = shuttleCameraPos;
-        volcanoLoop.Stop();
-        shuttleLoop.Play();
         diverBall.SetActive(false);
         dancerSeat.SetActive(true);
     }
@@ -95,7 +97,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(shuttleLoop.isPlaying && shuttleLoop.volume < 1f)
+        {
+            shuttleLoop.volume = shuttleLoop.volume + 0.001f;
+            volcanoLoop.volume = Mathf.Max(0f, volcanoLoop.volume - 0.001f);
+        }
     }
 
 

@@ -17,6 +17,7 @@ public class VolcanoSequence : MonoBehaviour
 
     public AudioSource inBreath;
     public AudioSource outBreath;
+    public AudioSource bubbles;
 
     public GameObject inBtn;
     public GameObject outBtn;
@@ -312,9 +313,10 @@ public class VolcanoSequence : MonoBehaviour
         wordsRevealed.Add(t.gameObject);
         t.GetComponent<IdleWobble>().enabled = false;
         t.gameObject.SetActive(true);
-        t.GetComponent<AudioSource>().Play();
+        //t.GetComponent<AudioSource>().Play();
         LeanTween.scale(t.gameObject, 3f * t.localScale, 3f).setEase(LeanTweenType.easeInOutBack);
         LeanTween.moveY(t.gameObject, t.localPosition.y + 10f, 30f).setEase(LeanTweenType.easeInCirc).setDelay(3f).setOnComplete(RemoveLastWord);
+        bubbles.Play();
     }
 
     private void RemoveLastWord()
