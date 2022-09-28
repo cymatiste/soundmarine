@@ -82,6 +82,14 @@ public class Player : MonoBehaviour
             //Debug.Log("))):  " + word.wordText);
             word.GetComponent<AudioSource>().Play();
             word.Highlight();
+
+            Transform effect = word.gameObject.transform.Find("effect");
+            if (effect != null)
+            {
+                effect.GetComponent<SpriteRenderer>().enabled = true;
+                effect.GetComponent<Animator>().Play("Liquid", 0, 0f);
+            }
+
             if (prevWord != null)
             {
                 prevWord.UnHighlight();
@@ -95,5 +103,17 @@ public class Player : MonoBehaviour
         return words.Count;
     }
 
-   
+    public int NumWordsCorrect()
+    {
+        int numCorrect = 0;
+        for(int i=0; i<words.Count; i++)
+        {
+            if (words[i].Correct())
+            {
+                numCorrect++;
+            }
+        }
+        return numCorrect;
+    }
+
 }

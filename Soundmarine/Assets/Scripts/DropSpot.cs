@@ -41,15 +41,16 @@ public class DropSpot : MonoBehaviour
 
     public void PlaceWordAt(Word word, Vector3 clickPos)
     {
+        Debug.Log("we good, placing "+word+" at "+clickPos);
 
         Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.002f);
 
         DropDot closestDot = ClosestObjectTo(clickPos, dots).GetComponent<DropDot>();
         
- 
-        if(closestDot.GetObj() != null)
+
+        if (closestDot.GetObj() != null)
         {
-            ClearWord(closestDot.GetObj().GetComponent<Word>(), true);
+            ClearWord(closestDot.GetObj().GetComponent<Word>(), true, false);
         }
 
         closestDot.SetObj(word.gameObject);
@@ -59,32 +60,37 @@ public class DropSpot : MonoBehaviour
             // e.g. word.play particle effect
             // word move accordingly
             word.SetMood(1);
-            // somebody add fish
+            GameObject.Find("GameManager").GetComponent<FollowingFish>().More();
         } else
         {
             // give - feedback
             // 
             word.SetMood(0);
         }
-        
-        // first determine where the new word belongs in the order on this row
-        int targetIndex = 0;
-        for (int i = 0; i < words.Count; i++)
-        {
-            if ((words[i].transform.position.x < targetPos.x))
-            {
-                targetIndex++;
-            }
-        }
 
+        // first determine where the new word belongs in the order on this row
         if (!words.Contains(word))
         {
+            
+           
             if (!RoomFor(word))
             {
-                ClearWord(ClosestWordTo(clickPos), true);
+                Debug.Log("not enough room, bouncing [ "+ ClosestWordTo(clickPos).wordText+" ]");
+                
+                ClearWord(ClosestWordTo(clickPos), true, false);
             }
+            int targetIndex = 0;
+            for (int i = 0; i < words.Count; i++)
+            {
+                if ((words[i].transform.position.x < targetPos.x))
+                {
+                    targetIndex++;
+                }
+            }
+            Debug.Log("wanna insert at " + targetIndex + " of " + words.Count);
             words.Insert(targetIndex, word);
             combinedWordWidth += WidthOf(word.gameObject);
+
         }
 
         List<GameObject> wordObjs = new();
@@ -104,11 +110,18 @@ public class DropSpot : MonoBehaviour
 
         word.transform.rotation = transform.rotation;
 
-        
+        Vector3 dropScale = word.transform.localScale;
+        word.transform.localScale = 3f*dropScale;
+        LeanTween.scale(word.gameObject, dropScale, 0.3f).setEaseOutBack();
+        Debug.Log("all done placement");
     }
 
-    public void ClearWord(Word w, bool andReset)
+    public void ClearWord(Word w, bool andReset, bool andRespace)
     {
+        if (w.Correct())
+        {
+            GameObject.Find("GameManager").GetComponent<FollowingFish>().Fewer();
+        }
         words.Remove(w);
         combinedWordWidth -= WidthOf(w.gameObject);
         w.ClearSpot();
@@ -129,8 +142,11 @@ public class DropSpot : MonoBehaviour
                 dd.SetObj(null);
             }
         }
-
-        SpaceAllEvenly(w.transform.localPosition);
+        if (andRespace)
+        {
+            SpaceAllEvenly(w.transform.localPosition);
+        }
+        
 
         if (andReset && w.gameObject.GetComponent<IdleWobble>() != null)
         {
@@ -154,7 +170,16 @@ public class DropSpot : MonoBehaviour
 
     private bool RoomFor(Word w)
     {
-        return ((words.Count < targetWords.Count) && (combinedWordWidth + minSpace*words.Count + WidthOf(w.gameObject) < spotWidth));
+
+        combinedWordWidth = 0f;
+        for(int i=0; i<words.Count; i++)
+        {
+            combinedWordWidth += WidthOf(words[i].gameObject);
+        }
+
+        Debug.Log(words.Count + " < " + targetWords.Count + " ? " + (words.Count < targetWords.Count) + ",   ( " + combinedWordWidth + " + " + minSpace + " * " + words.Count + " + " + WidthOf(w.gameObject) + ") < " + spotWidth + " ) ? "+ (combinedWordWidth + minSpace * words.Count + WidthOf(w.gameObject) < spotWidth));
+        
+        return ((words.Count < targetWords.Count) && (combinedWordWidth + minSpace * words.Count + WidthOf(w.gameObject) < spotWidth));
     }
 
     private float WidthOf(GameObject g)
@@ -171,7 +196,7 @@ public class DropSpot : MonoBehaviour
             
         foreach (Transform child in g.transform)
         {
-            if(child.GetComponent<Renderer>() != null)
+            if(child.GetComponent<Renderer>() != null && child.name != "effect")
             {
                 totalWidth += child.gameObject.GetComponent<Renderer>().bounds.size.x;
                 numChildrenRendering++;
@@ -226,7 +251,7 @@ public class DropSpot : MonoBehaviour
         }
     }
 
-    private void SpaceAllEvenly(Vector3 targetPos)
+    public void SpaceAllEvenly(Vector3 targetPos)
     {
         List<GameObject> widest = new();
 

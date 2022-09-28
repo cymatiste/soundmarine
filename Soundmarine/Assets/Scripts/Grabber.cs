@@ -6,9 +6,14 @@ public class Grabber : MonoBehaviour
 
     public Animator dropEffect;
 
+    private bool selectedWasCorrect = false;
+
     private void Start()
     {
-        dropEffect.enabled = false;
+        if (dropEffect != null)
+        {
+            dropEffect.enabled = false;
+        }
     }
 
     void Update()
@@ -62,7 +67,7 @@ public class Grabber : MonoBehaviour
                         if (selectedWord.GetSpot() != null)
                         {
                             
-                            selectedWord.GetSpot().ClearWord(selectedWord, false);
+                            selectedWord.GetSpot().ClearWord(selectedWord, false, false);
                             selectedWord.ClearSpot();
                         }
 
@@ -102,11 +107,20 @@ public class Grabber : MonoBehaviour
                         // dropping
 
                         GameObject dropSpotObj = hits[i].collider.gameObject;
-                        Debug.Log("Dropping "+ selectedObject.GetComponent<Word>().wordText+" on " +dropSpotObj.name+" at "+ hits[i].point);
 
-                        Debug.Log("is this about " + hits[i].point + " ? ");
-                        dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), hits[i].point);
+                        Vector3 dropPoint = hits[i].point;
+
+                        //Debug.Log("Dropping "+ selectedObject.GetComponent<Word>().wordText+" on " +dropSpotObj.name+" at "+ hits[i].point);
+
+
+                        Debug.Log("dropSpotObj: " + dropSpotObj + ", DS: " + dropSpotObj.GetComponent<DropSpot>() + ", hit: " + i+" of "+hits.Length + ", " + dropPoint);
+                        
+
+                        dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), dropPoint);
+                        
                         selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
+
+
 
                         droppedOnTarget = true;
                         selectedObject.GetComponent<Word>().UnHighlight();
@@ -123,13 +137,18 @@ public class Grabber : MonoBehaviour
                     selectedObject.GetComponent<IdleWobble>().enabled = true;
                     selectedObject.GetComponent<IdleWobble>().ResetPos();
                 }
+                DropSpot lastSpot = selectedObject.GetComponent<Word>().GetLastSpot();
+                if(lastSpot != null)
+                {
+                    lastSpot.SpaceAllEvenly(lastSpot.transform.position);
+                }
+                
             }
             if (selectedObject.GetComponent<Rigidbody>() != null)
             {
                 selectedObject.GetComponent<Rigidbody>().isKinematic = droppedOnTarget;
             }
             selectedObject.GetComponent<Collider>().enabled = true;
-
 
 
             foreach (Transform child in selectedObject.transform)

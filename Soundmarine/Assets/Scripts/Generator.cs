@@ -43,4 +43,10 @@ public class Generator : MonoBehaviour
         }
     }
 
+    public Fish SpawnSingleFish(Transform fishParent)
+    {
+        GameObject newFish = Instantiate(fishPrefabs[Random.Range(0,fishPrefabs.Count)], fishParent);
+        return newFish.GetComponent<Fish>();
+    }
+
 }

@@ -10,6 +10,7 @@ public class Word : MonoBehaviour
     public AudioSource wordVo;
     private TMPro.TextMeshPro textObj;
     private DropSpot spot = null;
+    private DropSpot prevSpot = null;
     private Vector3 wordScale;
 
     private Color offColor = new Color(1f, 1f, 1f, 1f);
@@ -18,7 +19,7 @@ public class Word : MonoBehaviour
     private int HAPPIEST = 1;
     private int UNHAPPY = 0;
     private int mood = 0;
-
+  
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +47,11 @@ public class Word : MonoBehaviour
         }
         mood = newMood;
         
+    }
+
+    public bool Correct()
+    {
+        return mood == HAPPIEST;
     }
 
     private void BounceUp()
@@ -90,6 +96,7 @@ public class Word : MonoBehaviour
 
     public void ClearSpot()
     {
+        prevSpot = spot;
         spot = null;
     }
 
@@ -97,11 +104,24 @@ public class Word : MonoBehaviour
     {
         return spot;
     }
+    public DropSpot GetLastSpot()
+    {
+        return prevSpot;
+    }
 
     public void Highlight()
     {
         transform.GetChild(0).GetComponent<Renderer>().material.color = onColor;
         transform.localScale = new Vector3(wordScale.x * 1.1f, wordScale.y * 1.1f, wordScale.z * 1.1f);
+        if (Correct())
+        {
+            Transform effect = transform.Find("effect");
+            if (effect != null)
+            {
+                effect.GetComponent<SpriteRenderer>().enabled = true;
+                effect.GetComponent<Animator>().Play("Liquid", 0, 0f);
+            }
+        }
     }
     public void UnHighlight()
     {
