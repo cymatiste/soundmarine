@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject diverBall;
     public GameObject dancerSeat;
+    public GameObject whale;
 
     public bool startInVolcano = false;
 
@@ -28,9 +30,16 @@ public class GameManager : MonoBehaviour
 
     private Vector3 dockPos = new Vector3(-0.0078f, 2.6f, 0f);
 
+    private Player player;
+    private GameObject puzzle;
+
     // Start is called before the first frame update
     void Start()
     {
+        player = gameObject.GetComponent<Player>();
+        puzzle = GameObject.Find("puzzle");
+        whale.SetActive(false);
+
         Camera.main.transform.localPosition = shuttleCameraPos;
 
         if (!startInVolcano)
@@ -91,6 +100,32 @@ public class GameManager : MonoBehaviour
     public void ShowButtons()
     {
         gameObject.GetComponent<VolcanoSequence>().ShowButtons(true);
+    }
+
+    public void PuzzleComplete()
+    {
+        LeanTween.moveZ(puzzle, puzzle.transform.position.z - 0.25f, 1f).setEaseInCirc();
+        LeanTween.moveY(puzzle, puzzle.transform.position.y + 1f, 8f).setDelay(2f).setEase(LeanTweenType.easeInCirc).setOnComplete(GameOver);
+
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("GAME OVER");
+        GameObject cam = Camera.main.gameObject;
+        puzzle.SetActive(false);
+        whale.SetActive(true);
+        LeanTween.moveLocalX(whale, whale.transform.localPosition.x -8f, 12f);
+        //LeanTween.moveY(cam, 0.05f, 1).setEaseInSine();
+        //LeanTween.moveZ(cam, -0.5f, 1).setEaseInSine();
+        //LeanTween.rotateX(cam, 2.43f, 1).setEaseInSine();
+        StartCoroutine(ShowCreditsAfter(15f));
+    }
+    private IEnumerator ShowCreditsAfter(float delay)
+    { 
+        yield return new WaitForSeconds(delay);
+        Debug.Log("that's all she wrote");
+        SceneManager.LoadScene("Credits");
     }
 
 

@@ -22,10 +22,10 @@ public class DropSpot : MonoBehaviour
         spotWidth = WidthOf(gameObject);
         spotLeftEdgeX = transform.localPosition.x - spotWidth / 2;
 
-        centerDotPos = new Vector3(transform.localPosition.x,  transform.localPosition.y-0.0015f, transform.localPosition.z - 0.000001f);
+        centerDotPos = new Vector3(transform.localPosition.x, transform.localPosition.y - 0.0015f, transform.localPosition.z - 0.000001f);
 
         GameObject spots = GameObject.Find("spots");
-        for (int i=0; i< targetWords.Count; i++)
+        for (int i = 0; i < targetWords.Count; i++)
         {
             GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
             dots.Add(dot);
@@ -34,11 +34,15 @@ public class DropSpot : MonoBehaviour
             dot.transform.parent = spots.transform;
             dot.GetComponent<DropDot>().SetTargetWord(targetWords[i]);
         }
-        combinedDotWidth = WidthOf(dots[0])* targetWords.Count;
+        combinedDotWidth = WidthOf(dots[0]) * targetWords.Count;
 
         SpaceEvenly(dots, centerDotPos, combinedDotWidth);
     }
 
+    public List<GameObject> GetDots()
+    {
+        return dots;
+    }
     public void PlaceWordAt(Word word, Vector3 clickPos)
     {
         Debug.Log("we good, placing "+word+" at "+clickPos);

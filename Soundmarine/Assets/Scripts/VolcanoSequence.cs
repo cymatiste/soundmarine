@@ -24,10 +24,17 @@ public class VolcanoSequence : MonoBehaviour
 
     public ParticleSystem rings;
 
+    public GameObject inCount;
+    public GameObject outCount;
+
     public List<Transform> wordTransforms;
     public List<GameObject> wordsRevealed;
 
-    private bool btnPressed = false;
+    // 0: none, 1: in, 2: out
+    private int btnPressed = 0;
+    private int IN = 1;
+    private int OUT = 2;
+    private int NONE = 0;
     private bool breathingIn = false;
 
     // phases:
@@ -53,6 +60,10 @@ public class VolcanoSequence : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        inCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+
         slowStartTime = Time.time;
 
         pitchBendGroup = Resources.Load<UnityEngine.Audio.AudioMixerGroup>("PitchBendMixer");
@@ -108,14 +119,31 @@ public class VolcanoSequence : MonoBehaviour
         outBreath.pitch = breatheSpeed;
         outBreath.outputAudioMixerGroup.audioMixer.SetFloat("pitchBend", 1f / breatheSpeed);
 
-        if (btnPressed)
+        if (btnPressed > 0)
         {
-            inBtn.GetComponent<Image>().color = new Color(0f, 0f, 1.2f * (inBreath.time / inBreath.clip.length));
-            outBtn.GetComponent<Image>().color = new Color(0f, 0f, 1.2f * (outBreath.time / outBreath.clip.length));
+            if(scenePhase == 1 && btnPressed == IN && breathingIn)
+            {
+                inBtn.GetComponent<Image>().color = new Color(0f, 0f, 1.2f * (inBreath.time / inBreath.clip.length));
+                outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+                inCount.GetComponent<TMPro.TextMeshProUGUI>().text = ""+Mathf.Floor(Time.time - inTime);
+
+            } else if (scenePhase == 1 && btnPressed == OUT && !breathingIn)
+            {
+                outBtn.GetComponent<Image>().color = new Color(0f, 0f, 1.2f * (outBreath.time / outBreath.clip.length));
+                inCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+                outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "" + Mathf.Floor(Time.time - outTime);
+            } else
+            {
+                inCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+                outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+            }
+
             breathVol = Mathf.Min(0.5f, breathVol + 0.001f);
-            
+
         } else
         {
+            inCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+            outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
             inBtn.GetComponent<Image>().color = new Color(0f, 0f, 0f);
             outBtn.GetComponent<Image>().color = new Color(0f, 0f, 0f);
             breathVol = Mathf.Max(0.2f, breathVol - 0.001f);
@@ -125,7 +153,7 @@ public class VolcanoSequence : MonoBehaviour
         outBreath.volume = breathVol;
 
 
-        if (btnPressed)
+        if (btnPressed > 0)
         {
             Slower();
         } else
@@ -185,21 +213,21 @@ public class VolcanoSequence : MonoBehaviour
 
     public void PressIn()
     {
-        btnPressed = true;
+        btnPressed = IN;
         BreatheIn();
     }
     public void PressOut()
     {
-        btnPressed = true;
+        btnPressed = OUT;
         BreatheOut();
     }
     public void ReleaseIn()
     {
-        btnPressed = false;
+        btnPressed = NONE;
     }
     public void ReleaseOut()
     {
-        btnPressed = false;
+        btnPressed = NONE;
        
     }
 
@@ -213,14 +241,14 @@ public class VolcanoSequence : MonoBehaviour
             breathingIn = true;
             inTime = Time.time;
             inBreath.time = 0.0001f;
-            inBreath.PlayDelayed(btnPressed ? 0f : 0.5f);
+            inBreath.PlayDelayed(btnPressed == IN ? 0f : 0.5f);
             if (Time.time - outTime < 2f)
             {
                 breatheSpeed = 1.5f;
             }
             rings.Emit(1);
 
-            if (btnPressed)
+            if (btnPressed == OUT)
             {
                 StartCoroutine(HideButton(outBtn, 1f));
             }
@@ -236,13 +264,13 @@ public class VolcanoSequence : MonoBehaviour
             inBreath.Stop();
             breathingIn = false;
             outBreath.time = 0.0001f;
-            outBreath.PlayDelayed(btnPressed ? 0f : 0.5f);
+            outBreath.PlayDelayed(btnPressed == OUT? 0f : 0.5f);
             if(Time.time - inTime < 2f)
             {
                 breatheSpeed = 1.5f;
             }
             rings.Emit(1);
-            if (btnPressed)
+            if (btnPressed == IN)
             {
                 StartCoroutine(HideButton(inBtn, 1f));
             }
@@ -254,6 +282,8 @@ public class VolcanoSequence : MonoBehaviour
     {
         inBtn.SetActive(false);
         outBtn.SetActive(false);
+        inCount.SetActive(false);
+        outCount.SetActive(false);
         dreamArt1.SetActive(false);
         dreamArt2.SetActive(false);
     }
@@ -265,6 +295,8 @@ public class VolcanoSequence : MonoBehaviour
             scenePhase = 1;
             inBtn.SetActive(true);
             outBtn.SetActive(true);
+            inCount.SetActive(true);
+            outCount.SetActive(true);
             rings.gameObject.SetActive(true);
             rings.Play();
         } else

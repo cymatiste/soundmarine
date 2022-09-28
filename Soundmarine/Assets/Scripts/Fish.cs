@@ -84,7 +84,7 @@ public class Fish : MonoBehaviour
         if(entering && Mathf.Abs(transform.localPosition.x - baselineX) < 0.001f)
         {
             entering = false;
-            Debug.Log(gameObject.name + " arrived.");
+            //Debug.Log(gameObject.name + " arrived.");
         }
     }
 

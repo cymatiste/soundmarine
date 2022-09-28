@@ -22,15 +22,12 @@ public class StartButton : MonoBehaviour
 
     public void Activate()
     {
-        Debug.Log("START plz");
-        SceneManager.LoadScene("Level01_Rebuild");
-        //clickSound.Play();
-        //StartCoroutine(Advance());
+        SceneManager.LoadScene("Explanation");
     }
 
-    IEnumerator Advance()
+    public void Continue()
     {
-        yield return new WaitForSeconds(2);
         SceneManager.LoadScene("Level01_Rebuild");
     }
+
 }

@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public AudioSource beat2;
     public bool playing = true;
 
+    public int puzzle1Length;
+
     private float loopTimer = 0f;
     private int loopIndex = 0;
     private int loopBeats = 16;
@@ -45,6 +47,20 @@ public class Player : MonoBehaviour
         {
             loopIndex = 0;
             loopTimer = 0f;
+
+            if (NumWordsCorrect() == puzzle1Length)
+            {
+                foreach (DropSpot spot in spots) {
+                    foreach(GameObject dot in spot.GetDots())
+                    {
+                        dot.SetActive(false);
+                    }
+                    spot.gameObject.SetActive(false);
+                }
+                GameObject.Find("GameManager").GetComponent<GameManager>().PuzzleComplete();
+
+                playing = false;
+            }
 
         }
 
