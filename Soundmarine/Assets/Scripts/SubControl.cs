@@ -31,8 +31,8 @@ public class SubControl : MonoBehaviour
         if (transform.position.x > leftX)
         {
             // move left at a speed determined by the number of words placed
-            //transform.position = new Vector3(transform.position.x-speed*player.NumWordsPlaced(), transform.position.y, transform.position.z);
-            transform.position = new Vector3(transform.position.x - speed * player.NumWordsCorrect(), transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x-speed*player.NumWordsPlaced(), transform.position.y, transform.position.z);
+            //transform.position = new Vector3(transform.position.x - speed * player.NumWordsCorrect(), transform.position.y, transform.position.z);
 
         } else
         {

@@ -18,6 +18,7 @@ public class VolcanoSequence : MonoBehaviour
     public AudioSource inBreath;
     public AudioSource outBreath;
     public AudioSource bubbles;
+    public AudioSource creatureVoice;
 
     public GameObject inBtn;
     public GameObject outBtn;
@@ -85,7 +86,7 @@ public class VolcanoSequence : MonoBehaviour
             t.gameObject.SetActive(false);
         }
 
-        BreatheIn();
+        Debug.Log("volcano sequence started, scenePhase is "+scenePhase);
     }
 
     // Update is called once per frame
@@ -215,20 +216,24 @@ public class VolcanoSequence : MonoBehaviour
     {
         btnPressed = IN;
         BreatheIn();
+        Debug.Log("PRESS IN");
     }
     public void PressOut()
     {
         btnPressed = OUT;
         BreatheOut();
+        Debug.Log("PRESS OUT");
     }
     public void ReleaseIn()
     {
         btnPressed = NONE;
+        Debug.Log("RELEASE IN");
     }
     public void ReleaseOut()
     {
         btnPressed = NONE;
-       
+        Debug.Log("RELEASE OUT");
+
     }
 
 
@@ -290,6 +295,7 @@ public class VolcanoSequence : MonoBehaviour
 
     public void ShowButtons(bool toShow)
     {
+        Debug.Log("should we show the buttons? " + toShow);
         if (toShow)
         {
             scenePhase = 1;
@@ -302,14 +308,16 @@ public class VolcanoSequence : MonoBehaviour
         } else
         {
             scenePhase = 2;
+            BreatheIn();
             inBtn.SetActive(false);
             outBtn.SetActive(false);
             rings.Stop(true,ParticleSystemStopBehavior.StopEmitting);
             dreamArt1.GetComponent<Renderer>().material.color = new Color(0,0,0,0);
             dreamArt2.GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+            creatureVoice.Play();
             StartCoroutine(MoveOnAfter(10f));
         }
-        
+        Debug.Log("did we do it? scenePhase is now: " + scenePhase);
     }
 
     private IEnumerator MoveOnAfter(float delay)
@@ -346,7 +354,8 @@ public class VolcanoSequence : MonoBehaviour
         t.GetComponent<IdleWobble>().enabled = false;
         t.gameObject.SetActive(true);
         //t.GetComponent<AudioSource>().Play();
-        LeanTween.scale(t.gameObject, 3f * t.localScale, 3f).setEase(LeanTweenType.easeInOutBack);
+        LeanTween.scale(t.gameObject, 2f * t.localScale, 2f).setEase(LeanTweenType.easeInOutBack);
+        LeanTween.scale(t.gameObject, 1f * t.localScale, 2f).setDelay(2f).setEase(LeanTweenType.easeOutSine);
         LeanTween.moveY(t.gameObject, t.localPosition.y + 10f, 30f).setEase(LeanTweenType.easeInCirc).setDelay(3f).setOnComplete(RemoveLastWord);
         bubbles.Play();
     }
@@ -355,7 +364,7 @@ public class VolcanoSequence : MonoBehaviour
     {
         GameObject g = wordsRevealed[0];
         g.SetActive(false);
-        Debug.Log("deactivating " + g.name);
+        //Debug.Log("deactivating " + g.name);
         wordsRevealed.Remove(g);
     }
 }

@@ -11,6 +11,7 @@ public class Word : MonoBehaviour
     private TMPro.TextMeshPro textObj;
     private DropSpot spot = null;
     private DropSpot prevSpot = null;
+    private DropDot dot = null;
     private Vector3 wordScale;
 
     private Color offColor = new Color(1f, 1f, 1f, 1f);
@@ -19,7 +20,8 @@ public class Word : MonoBehaviour
     private int HAPPIEST = 1;
     private int UNHAPPY = 0;
     private int mood = 0;
-  
+    private bool waving = false;
+      
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,7 @@ public class Word : MonoBehaviour
 
     public void Init()
     {
+        mood = UNHAPPY;
         textObj = gameObject.GetComponentInChildren<TMPro.TextMeshPro>();
         if(textObj != null)
         {
@@ -40,10 +43,12 @@ public class Word : MonoBehaviour
     public void SetMood(int newMood)
     {
         
-        if (newMood == HAPPIEST && mood != HAPPIEST)
+        if (newMood == HAPPIEST)
         {
-            LeanTween.cancelAll();
-            //BounceUp();
+            wordVo.pitch = 1f;
+        } else
+        {
+            wordVo.pitch = 0.5f;
         }
         mood = newMood;
         
@@ -51,37 +56,22 @@ public class Word : MonoBehaviour
 
     public bool Correct()
     {
-        return mood == HAPPIEST;
+        return ( mood == HAPPIEST );
     }
 
-    private void BounceUp()
-    {
-        LeanTween.moveLocalY(gameObject, transform.localPosition.y + 0.001f, 0.5f).setEase(LeanTweenType.easeInOutBack).setOnComplete(BounceDown);
-        //LeanTween.scaleY(gameObject, transform.localScale.y*1.1f, 0.1f);
-    }
 
-    private void BounceIfHappy()
-    {
-        if (mood == HAPPIEST)
-        {
-            BounceUp();
-
-        }
-    }
-
-    private void BounceDown()
-    {
-        LeanTween.moveLocalY(gameObject, transform.localPosition.y - 0.001f, 0.3f).setEase(LeanTweenType.easeInCirc).setOnComplete(BounceIfHappy);
-    }
-
-    private void Fidget()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
     {
+        if (waving)
+        {
+            
+            foreach(Transform t in transform)
+            {
+                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.position.x*12f), t.localPosition.z);
+            }
+        }
     }
 
     public void Speak()
@@ -89,15 +79,25 @@ public class Word : MonoBehaviour
         wordVo.Play();
     }
 
-    public void SetSpot(DropSpot d)
+    public void SetSpot(DropSpot ds)
     {
-        spot = d;
+        spot = ds;
     }
 
+    public void SetDot(DropDot d)
+    {
+        dot = d;
+    }
+
+    public DropDot GetDot()
+    {
+        return dot;
+    }
     public void ClearSpot()
     {
         prevSpot = spot;
         spot = null;
+        dot = null;
     }
 
     public DropSpot GetSpot()
@@ -111,21 +111,32 @@ public class Word : MonoBehaviour
 
     public void Highlight()
     {
-        transform.GetChild(0).GetComponent<Renderer>().material.color = onColor;
-        transform.localScale = new Vector3(wordScale.x * 1.1f, wordScale.y * 1.1f, wordScale.z * 1.1f);
+        //transform.GetChild(0).GetComponent<Renderer>().material.color = onColor;
+        
         if (Correct())
         {
+            
+            transform.localScale = 1.1f * wordScale;
             Transform effect = transform.Find("effect");
             if (effect != null)
             {
                 effect.GetComponent<SpriteRenderer>().enabled = true;
                 effect.GetComponent<Animator>().Play("Liquid", 0, 0f);
+
             }
+        } else
+        {
+            transform.localScale = 0.9f * wordScale;
         }
     }
     public void UnHighlight()
     {
-        transform.GetChild(0).GetComponent<Renderer>().material.color = offColor;
+        //transform.GetChild(0).GetComponent<Renderer>().material.color = offColor;
         transform.localScale = new Vector3(wordScale.x, wordScale.y, wordScale.z);
+    }
+
+    public void Wave()
+    {
+        waving = true;
     }
 }

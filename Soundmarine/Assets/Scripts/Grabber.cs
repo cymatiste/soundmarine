@@ -10,8 +10,6 @@ public class Grabber : MonoBehaviour
     public AudioSource dropSound;
     public AudioSource softGrabSound;
 
-    private bool selectedWasCorrect = false;
-
     private void Start()
     {
         if (dropEffect != null)
@@ -59,6 +57,7 @@ public class Grabber : MonoBehaviour
                         }
                         selectedObject.transform.rotation = Quaternion.identity;
 
+                        /*
                         foreach (Transform child in selectedObject.transform)
                         {
                             Color oldColor = child.GetComponent<Renderer>().material.color;
@@ -68,6 +67,7 @@ public class Grabber : MonoBehaviour
                                 child.GetComponent<Renderer>().material.SetColor("_Color", new Color(oldColor.r, oldColor.g, oldColor.b, 0.5f));
                             }
                         }
+                        */
 
                         Word selectedWord = selectedObject.GetComponent<Word>();
                         if (selectedWord.GetSpot() != null)
@@ -126,16 +126,16 @@ public class Grabber : MonoBehaviour
                         Debug.Log("dropSpotObj: " + dropSpotObj + ", DS: " + dropSpotObj.GetComponent<DropSpot>() + ", hit: " + i+" of "+hits.Length + ", " + dropPoint);
                         
 
-                        dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), dropPoint);
-                        
-                        selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
+                        bool placed = dropSpotObj.GetComponent<DropSpot>().PlaceWordAt(selectedObject.GetComponent<Word>(), dropPoint);
 
-
-
-                        droppedOnTarget = true;
-                        selectedObject.GetComponent<Word>().UnHighlight();
-                        selectedObject.GetComponent<AudioSource>().Play();
-                        dropSound.Play();
+                        if (placed)
+                        {
+                            selectedObject.GetComponent<Word>().SetSpot(dropSpotObj.GetComponent<DropSpot>());
+                            droppedOnTarget = true;
+                            selectedObject.GetComponent<Word>().UnHighlight();
+                            selectedObject.GetComponent<AudioSource>().Play();
+                            dropSound.Play();
+                        }
                     }
                 }
             }
@@ -161,7 +161,7 @@ public class Grabber : MonoBehaviour
             }
             selectedObject.GetComponent<Collider>().enabled = true;
 
-
+            /*
             foreach (Transform child in selectedObject.transform)
             {
                 Color oldColor = child.GetComponent<Renderer>().material.color;
@@ -171,6 +171,7 @@ public class Grabber : MonoBehaviour
                     child.GetComponent<Renderer>().material.SetColor("_Color", new Color(oldColor.r, oldColor.g, oldColor.b, 1f));
                 }
             }
+            */
             selectedObject = null;
             
         }

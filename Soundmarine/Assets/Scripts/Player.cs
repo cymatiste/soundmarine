@@ -5,24 +5,70 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    public List<DropSpot> spots = new();
+    public List<Transform> spotSets;
     public float loopSeconds = 20f;
     public AudioSource beat1;
     public AudioSource beat2;
-    public bool playing = true;
+    public bool playing = false;
+    public bool lastRun = false;
 
-    public int puzzle1Length;
-
+    
     private float loopTimer = 0f;
     private int loopIndex = 0;
     private int loopBeats = 16;
     private Word prevWord;
-    
+    private DropDot prevDot;
+    private List<DropSpot> spots;
+    private List<DropDot> dots;
+    private int puzzleNum;
 
-    private List<Word> words = new();
+
+    private List<Word> words;
 
     void Start()
     {
+        foreach(Transform t in spotSets)
+        {
+            t.gameObject.SetActive(false);
+        }
+    }
+
+
+    public void InitPuzzle(int set)
+    {
+        puzzleNum = set;
+        spots = new();
+        dots = new();
+        words = new();
+        lastRun = false;
+        for (int i = 0; i < spotSets.Count; i++)
+        {
+            spotSets[i].gameObject.SetActive(i==puzzleNum);
+        }
+        foreach (Transform t in spotSets[puzzleNum])
+        {
+            if(t.gameObject != null && t.gameObject.GetComponent<DropSpot>() != null)
+            {
+                spots.Add(t.gameObject.GetComponent<DropSpot>());
+            }
+            
+        }
+        Debug.Log("found " + spots.Count + " spots");
+        foreach (DropSpot spot in spots)
+        {
+            spot.Init();
+            foreach (GameObject d in spot.GetDots())
+            {
+                dots.Add(d.GetComponent<DropDot>());
+            }
+        }
+        Debug.Log("added " + dots.Count + " dots");
+        playing = true;
+    }
+
+    public Transform GetSpotSet()
+    {
+        return spotSets[puzzleNum];
     }
 
     void Update()
@@ -31,36 +77,41 @@ public class Player : MonoBehaviour
         {
             return;
         }
-
-        words.Clear();
-        foreach (DropSpot spot in spots)
-        {
-            foreach (Word w in spot.GetWords())
-            {
-                words.Add(w);
-            }
-        }
-       
-        //Debug.Log("WORDS: " + wordTracer);
+  
 
         if (loopTimer > loopSeconds)
         {
             loopIndex = 0;
             loopTimer = 0f;
 
-            if (NumWordsCorrect() == puzzle1Length)
-            {
-                foreach (DropSpot spot in spots) {
-                    foreach(GameObject dot in spot.GetDots())
-                    {
-                        dot.SetActive(false);
-                    }
-                    spot.gameObject.SetActive(false);
-                }
-                GameObject.Find("GameManager").GetComponent<GameManager>().PuzzleComplete();
+            Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
 
-                playing = false;
+            if (NumWordsCorrect() == dots.Count)
+            {
+                if (!lastRun)
+                {
+                    /*
+                    foreach (DropSpot spot in spots)
+                    {
+                        foreach (GameObject dot in spot.GetDots())
+                        {
+                            dot.SetActive(false);
+                        }
+                        spot.gameObject.SetActive(false);
+                    }
+                    */
+                    spotSets[puzzleNum].gameObject.SetActive(false);
+                    GameObject.Find("GameManager").GetComponent<GameManager>().PuzzleComplete();
+                    lastRun = true;
+                } else
+                {
+                    playing = false;
+                    return;
+                }
+               
             }
+
+            words.Clear();
 
         }
 
@@ -72,43 +123,63 @@ public class Player : MonoBehaviour
             beat.Play();
 
             if (loopIndex % 2 == 0)
-            { 
-                if(loopIndex / 2 < words.Count)
+            {
+                if (loopIndex / 2 < dots.Count)
                 {
-                    PlayWord(words[loopIndex / 2]);
+                    if (prevDot != null)
+                    {
+                        prevDot.UnHighlight();
+                    }
+
+                    //PlayWord(words[loopIndex / 2]);
+                    DropDot activeDot = dots[loopIndex / 2];
+                    if (activeDot.GetObj() != null)
+                    {
+                        PlayWord(activeDot.GetObj().GetComponent<Word>());
+                    }
+                    activeDot.Highlight();
+                    prevDot = activeDot;
+                    //Debug.Log("   ** highlighting " + activeDot.name);
                 }
-                else if(prevWord != null)
-                {
-                    prevWord.UnHighlight();
-                    prevWord = null;
+                else { 
+                    if (prevWord != null)
+                    {
+                        prevWord.UnHighlight();
+                        prevWord = null;
+                    }
+                    if (prevDot != null)
+                    {
+                        //Debug.Log("   ** UNhighlighting " + prevDot.name);
+                        prevDot.UnHighlight();
+                        prevDot = null;
+                    }                  
                 }
             }
-            
-
-            loopIndex++;
+                loopIndex++;
         }
         loopTimer += Time.deltaTime;
     }
 
     private void PlayWord(Word word)
     {
-        if (word != null && !word.GetComponent<AudioSource>().isPlaying)
+        if (word != null)
         {
-
-            //Debug.Log("))):  " + word.wordText);
-            word.GetComponent<AudioSource>().Play();
+            words.Add(word);
+            Debug.Log("))):  " + word.name);
             word.Highlight();
-
-            Transform effect = word.gameObject.transform.Find("effect");
-            if (effect != null)
+            if (!word.GetComponent<AudioSource>().isPlaying)
             {
-                effect.GetComponent<SpriteRenderer>().enabled = true;
-                effect.GetComponent<Animator>().Play("Liquid", 0, 0f);
+                word.Speak();
+            }
+            if (lastRun)
+            {
+                word.Wave();
             }
 
             if (prevWord != null)
             {
                 prevWord.UnHighlight();
+                prevDot.UnHighlight();
             }
             prevWord = word;
         }
@@ -116,7 +187,7 @@ public class Player : MonoBehaviour
 
     public int NumWordsPlaced()
     {
-        return words.Count;
+        return (words == null) ? 0 : words.Count;
     }
 
     public int NumWordsCorrect()

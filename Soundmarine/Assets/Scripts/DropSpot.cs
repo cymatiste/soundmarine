@@ -13,51 +13,57 @@ public class DropSpot : MonoBehaviour
     private float spotLeftEdgeX;
     private float combinedWordWidth;
     private float combinedDotWidth;
-    private float minSpace = 0.003f;
+    private float minSpace = 0f;
 
     private Vector3 centerDotPos;
 
-    private void Start()
+    public void Init()
     {
         spotWidth = WidthOf(gameObject);
         spotLeftEdgeX = transform.localPosition.x - spotWidth / 2;
 
-        centerDotPos = new Vector3(transform.localPosition.x, transform.localPosition.y - 0.0015f, transform.localPosition.z - 0.000001f);
+        centerDotPos = new Vector3(transform.localPosition.x, transform.localPosition.y - 0.001f, transform.localPosition.z - 0.000001f);
 
-        GameObject spots = GameObject.Find("spots");
+        Transform spots = GameObject.Find("puzzle").GetComponent<Player>().GetSpotSet();
         for (int i = 0; i < targetWords.Count; i++)
         {
             GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
+            dot.name = gameObject.name + "_dot_" + i;
             dots.Add(dot);
             dot.transform.localScale = 0.0015f * Vector3.one;
             dot.transform.localPosition = centerDotPos;
-            dot.transform.parent = spots.transform;
+            dot.transform.parent = spots;
             dot.GetComponent<DropDot>().SetTargetWord(targetWords[i]);
+            dot.GetComponent<DropDot>().SetObj(null);
         }
         combinedDotWidth = WidthOf(dots[0]) * targetWords.Count;
 
         SpaceEvenly(dots, centerDotPos, combinedDotWidth);
+        Debug.Log("DropSpot " + gameObject.name + " started with "+dots.Count+" dots, child of "+spots.gameObject.name);
     }
 
     public List<GameObject> GetDots()
     {
+        Debug.Log("      " + gameObject.name + " returning " + dots.Count + " dot(s)");
         return dots;
     }
-    public void PlaceWordAt(Word word, Vector3 clickPos)
+    public bool PlaceWordAt(Word word, Vector3 clickPos)
     {
-        Debug.Log("we good, placing "+word+" at "+clickPos);
+        //Debug.Log("we good, placing "+word+" at "+clickPos);
 
-        Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.002f);
+        Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.012f);
 
         DropDot closestDot = ClosestObjectTo(clickPos, dots).GetComponent<DropDot>();
         
 
         if (closestDot.GetObj() != null)
         {
-            ClearWord(closestDot.GetObj().GetComponent<Word>(), true, false);
+            //ClearWord(closestDot.GetObj().GetComponent<Word>(), true, false);
+            ClearWord(closestDot.GetObj().GetComponent<Word>(), true, true);
         }
 
         closestDot.SetObj(word.gameObject);
+        word.SetDot(closestDot);
         if (closestDot.Correct())
         {
             // give + feedback
@@ -75,13 +81,21 @@ public class DropSpot : MonoBehaviour
         // first determine where the new word belongs in the order on this row
         if (!words.Contains(word))
         {
-            
-           
+
+            //Debug.Log("about to check for room");
             if (!RoomFor(word))
             {
-                Debug.Log("not enough room, bouncing [ "+ ClosestWordTo(clickPos).wordText+" ]");
-                
-                ClearWord(ClosestWordTo(clickPos), true, false);
+                Word closestWord = ClosestWordTo(clickPos);
+                if(closestWord != null)
+                {
+                    //Debug.Log("not enough room, bouncing [ " + ClosestWordTo(clickPos).wordText + " ]");
+
+                    ClearWord(closestWord, true, true);
+                } else
+                {
+                    //Debug.Log("not enough room and no words to bounce.");
+                    return false;
+                }  
             }
             int targetIndex = 0;
             for (int i = 0; i < words.Count; i++)
@@ -91,10 +105,9 @@ public class DropSpot : MonoBehaviour
                     targetIndex++;
                 }
             }
-            Debug.Log("wanna insert at " + targetIndex + " of " + words.Count);
+            //Debug.Log("wanna insert at " + targetIndex + " of " + words.Count);
             words.Insert(targetIndex, word);
             combinedWordWidth += WidthOf(word.gameObject);
-
         }
 
         List<GameObject> wordObjs = new();
@@ -117,7 +130,9 @@ public class DropSpot : MonoBehaviour
         Vector3 dropScale = word.transform.localScale;
         word.transform.localScale = 3f*dropScale;
         LeanTween.scale(word.gameObject, dropScale, 0.3f).setEaseOutBack();
-        Debug.Log("all done placement");
+        //Debug.Log("all done placement");
+
+        return true;
     }
 
     public void ClearWord(Word w, bool andReset, bool andRespace)
@@ -126,6 +141,13 @@ public class DropSpot : MonoBehaviour
         {
             GameObject.Find("GameManager").GetComponent<FollowingFish>().Fewer();
         }
+        w.SetMood(0);
+        if(w.GetDot() != null)
+        {
+            w.GetDot().SetObj(null);
+        }
+        w.SetDot(null);
+        
         words.Remove(w);
         combinedWordWidth -= WidthOf(w.gameObject);
         w.ClearSpot();
@@ -148,7 +170,9 @@ public class DropSpot : MonoBehaviour
         }
         if (andRespace)
         {
-            SpaceAllEvenly(w.transform.localPosition);
+            Vector3 targetPos = new Vector3(w.transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - 0.002f);
+            //SpaceAllEvenly(w.transform.localPosition);
+            SpaceAllEvenly(targetPos);
         }
         
 
@@ -189,15 +213,17 @@ public class DropSpot : MonoBehaviour
     private float WidthOf(GameObject g)
     {
         float totalWidth = 0f;
-        int numChildrenRendering = 0;
+        //int numChildrenRendering = 0;
 
-
-        if (g.GetComponent<Renderer>() != null)
+        if(g.GetComponent<BoxCollider>() != null)
         {
-            totalWidth += g.GetComponent<Renderer>().bounds.size.x;
-            numChildrenRendering++;
+            totalWidth = g.GetComponent<BoxCollider>().size.x*g.transform.localScale.x;
+        } else if (g.GetComponent<Renderer>() != null)
+        {
+            totalWidth = g.GetComponent<Renderer>().bounds.size.x;
+            //numChildrenRendering++;
         }
-            
+        /*
         foreach (Transform child in g.transform)
         {
             if(child.GetComponent<Renderer>() != null && child.name != "effect")
@@ -206,17 +232,28 @@ public class DropSpot : MonoBehaviour
                 numChildrenRendering++;
             }
         }
-        return totalWidth / numChildrenRendering;
+        */
+        //return totalWidth / numChildrenRendering;
+
+        return totalWidth;
     }
 
     private Word ClosestWordTo(Vector3 clickPos)
     {
         List<GameObject> wordObjects = new();
-        foreach(Word w in words)
+        foreach (Word w in words)
         {
             wordObjects.Add(w.gameObject);
         }
-        return ClosestObjectTo(clickPos, wordObjects).GetComponent<Word>();
+        GameObject closestObj = ClosestObjectTo(clickPos, wordObjects);
+        if (closestObj == null)
+        {
+            return null;
+        } else
+        {
+            return closestObj.GetComponent<Word>();
+        }
+        
     }
 
     private GameObject ClosestObjectTo(Vector3 clickPos, List<GameObject> objects )
@@ -242,27 +279,29 @@ public class DropSpot : MonoBehaviour
 
         float spaceBetween = (spotWidth - combinedObjectsWidth) / (objects.Count + 1);
 
-        //Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
+        Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
         for (int i = 0; i < objects.Count; i++)
         {
-
+            //Debug.Log(" : item "+i+" is ")
             float neighbourEdgeX = (i == 0) ? spotLeftEdgeX : objects[i - 1].transform.localPosition.x + WidthOf(objects[i - 1]) / 2;
             float newTargetX = neighbourEdgeX + spaceBetween + WidthOf(objects[i]) / 2;
 
             objects[i].transform.localPosition = new Vector3(newTargetX, targetPos.y, targetPos.z);
 
-            //Debug.Log("placed " + objects[i].name + " at " + objects[i].transform.localPosition);
+            Debug.Log("placed " + objects[i].name + " at " + objects[i].transform.localPosition);
         }
     }
 
     public void SpaceAllEvenly(Vector3 targetPos)
     {
+        
         List<GameObject> widest = new();
 
         float combinedWidth = 0f;
         for (int i = 0; i < dots.Count; i++)
         {
             GameObject placedObj = dots[i].GetComponent<DropDot>().GetObj();
+            //Debug.Log("dot " + i +" has placed: "+placedObj);
             if (placedObj == null)
             {
                 combinedWidth += WidthOf(dots[i]);
@@ -276,9 +315,12 @@ public class DropSpot : MonoBehaviour
 
         float spaceBetween = (spotWidth - combinedWidth) / (dots.Count + 1);
 
+        Debug.Log("SpaceAllEvenly placing " + dots.Count + " items with combined width "+combinedWidth+" across "+WidthOf(gameObject)+" with " + spaceBetween + " between");
+
+
         for (int i = 0; i < dots.Count; i++)
         {
-            
+            Debug.Log("  :: " + widest[i].name + " width " + WidthOf(widest[i]));
             float neighbourEdgeX = (i == 0) ? spotLeftEdgeX : widest[i - 1].transform.localPosition.x + WidthOf(widest[i - 1]) / 2;
             float newTargetX = neighbourEdgeX + spaceBetween + WidthOf(widest[i]) / 2;
 

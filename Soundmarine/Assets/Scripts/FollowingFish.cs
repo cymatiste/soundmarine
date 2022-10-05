@@ -18,7 +18,8 @@ public class FollowingFish : MonoBehaviour
     private float maxX = 0.16f;
     private float minZ = -0.0001f;
     private float maxZ = 0.0001f;
-    private int BUMP_NUMBER = 5;
+    
+    private int BUMP_NUMBER = 9;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,11 @@ public class FollowingFish : MonoBehaviour
         numFollowing = Mathf.Max(0, numFollowing - BUMP_NUMBER);
     }
 
+    public void ReleaseAll()
+    {
+        numFollowing = 0;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -47,7 +53,7 @@ public class FollowingFish : MonoBehaviour
         {
             // to do: re-collect free fish here when they exist instead of spawning them 
             Fish newFish = generator.SpawnSingleFish(theSub);
-            newFish.transform.localScale = newFish.transform.localScale * Random.Range(0.3f, 0.5f);
+            newFish.transform.localScale = newFish.transform.localScale * Random.Range(0.25f, 0.35f);
             Vector3 subPos = theSub.position;
             //newFish.SpawnAt(subPos.x + Random.Range(minX, maxX), subPos.y + Random.Range(minY, maxY), subPos.z + Random.Range(minZ, maxZ), -1, 0f);
             newFish.SpawnAt(Random.Range(minX, maxX), Random.Range(minY, maxY), Random.Range(minZ, maxZ), -1, 0f);
@@ -65,5 +71,14 @@ public class FollowingFish : MonoBehaviour
         f.Follow(false);
         f.transform.SetParent(GameObject.Find("fish").transform);
         f.SpawnAt(newSpawnPos.x, newSpawnPos.y, newSpawnPos.z, 1, 0.0001f);
+    }
+
+    public void Dance()
+    {
+        Debug.Log("now dance!");
+        foreach(Fish f in followingFish)
+        {
+            f.Dance();
+        }
     }
 }

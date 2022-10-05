@@ -13,12 +13,18 @@ public class GameManager : MonoBehaviour
     public AudioSource submarineLoop;
 
     public List<AudioClip> instrument_puzzle1;
+    public List<AudioClip> instrument_puzzle2;
+    public List<AudioClip> instrument_puzzle3;
+    public List<AudioClip> instrument_puzzle4;
 
     public GameObject diverBall;
     public GameObject dancerSeat;
     public GameObject whale;
 
+    public List<GameObject> wordSets;
+
     public bool startInVolcano = false;
+
 
     private Vector3 volcanoShuttlePos = new Vector3(0, -4.5f, -0.67f);
     // these one for straight jumps:
@@ -32,12 +38,16 @@ public class GameManager : MonoBehaviour
 
     private Player player;
     private GameObject puzzle;
+    private GameObject puzzleWords;
+    
+    private int puzzleNum = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = gameObject.GetComponent<Player>();
         puzzle = GameObject.Find("puzzle");
+        puzzleWords = wordSets[puzzleNum];
+        player = puzzle.GetComponent<Player>();
         whale.SetActive(false);
 
         Camera.main.transform.localPosition = shuttleCameraPos;
@@ -49,19 +59,6 @@ public class GameManager : MonoBehaviour
             volcanoSequence.Exit();
             volcanoSequence.enabled = false;
         } 
-
-        GameObject wordsParent = GameObject.Find("words");
-        Debug.Log("wordsParent: " + wordsParent);
-        int clipIndex = 0;
-        foreach (Transform word in wordsParent.transform)
-        {
-            if(word.GetComponent<AudioSource>() != null)
-            {
-                word.GetComponent<AudioSource>().clip = instrument_puzzle1[clipIndex % instrument_puzzle1.Count];
-                clipIndex++;
-            }
-            
-        }
 
         if (startInVolcano)
         {
@@ -91,41 +88,91 @@ public class GameManager : MonoBehaviour
     public void SetUpShuttlePuzzle()
     {
         Debug.Log("do it");
-        Camera.main.transform.localPosition = shuttleCameraPos;
+        //Camera.main.transform.localPosition = shuttleCameraPos;
         diverBall.SetActive(false);
         dancerSeat.SetActive(true);
+        for(int i=0; i<wordSets.Count; i++)
+        {
+            wordSets[i].gameObject.SetActive(i==puzzleNum);
+        }
+        
+        int clipIndex = 0;
+        List<AudioClip> instrument =
+            (puzzleNum == 0 || puzzleNum == 4)
+            ? instrument_puzzle1
+            : (puzzleNum == 1 || puzzleNum == 5)
+                ? instrument_puzzle2
+                : instrument_puzzle3;
+                  
+
+        puzzleWords = wordSets[puzzleNum];
+        puzzleWords.SetActive(true);
+        foreach (Transform word in puzzleWords.transform)
+        {
+            word.GetComponent<Word>().Init();
+            if (word.GetComponent<AudioSource>() != null)
+            {
+                word.GetComponent<AudioSource>().clip = instrument[clipIndex % instrument.Count];
+                clipIndex++;
+            }
+
+        }
+        player.InitPuzzle(puzzleNum);
     }
 
 
     public void ShowButtons()
     {
+        Debug.Log("please show buttons?");
         gameObject.GetComponent<VolcanoSequence>().ShowButtons(true);
     }
 
     public void PuzzleComplete()
     {
-        LeanTween.moveZ(puzzle, puzzle.transform.position.z - 0.25f, 1f).setEaseInCirc();
-        LeanTween.moveY(puzzle, puzzle.transform.position.y + 1f, 8f).setDelay(2f).setEase(LeanTweenType.easeInCirc).setOnComplete(GameOver);
+        // hide all the red herring words
+        foreach(Transform t in puzzleWords.transform)
+        {
+            if(t.GetComponent<Word>() != null && t.GetComponent<Word>().GetSpot() == null)
+            {
+                Debug.Log(" hiding " + t.gameObject.name);
+                t.gameObject.SetActive(false);
+            }
+        }
+
+        LeanTween.moveZ(puzzleWords, puzzleWords.transform.position.z - 0.25f, 1f).setEaseInCirc();
+        LeanTween.moveY(puzzleWords, puzzleWords.transform.position.y + 1f, 8f).setDelay(12f).setEase(LeanTweenType.easeInCirc).setOnComplete(GameOver);
+
+        GameObject.Find("GameManager").GetComponent<FollowingFish>().Dance();
 
     }
 
     public void GameOver()
     {
-        Debug.Log("GAME OVER");
+        GameObject.Find("GameManager").GetComponent<FollowingFish>().ReleaseAll();
         GameObject cam = Camera.main.gameObject;
-        puzzle.SetActive(false);
+        //puzzle.SetActive(false);
         whale.SetActive(true);
+        whale.transform.localPosition = new Vector3(4f, whale.transform.localPosition.y, whale.transform.localPosition.z);
         LeanTween.moveLocalX(whale, whale.transform.localPosition.x -8f, 12f);
         //LeanTween.moveY(cam, 0.05f, 1).setEaseInSine();
         //LeanTween.moveZ(cam, -0.5f, 1).setEaseInSine();
         //LeanTween.rotateX(cam, 2.43f, 1).setEaseInSine();
-        StartCoroutine(ShowCreditsAfter(15f));
+        StartCoroutine(ContinueAfter(15f));
     }
-    private IEnumerator ShowCreditsAfter(float delay)
+    private IEnumerator ContinueAfter(float delay)
     { 
         yield return new WaitForSeconds(delay);
-        Debug.Log("that's all she wrote");
-        SceneManager.LoadScene("Credits");
+        whale.SetActive(false);
+        if (puzzleNum == 4)
+        {
+            Debug.Log("GAME OVER");
+            SceneManager.LoadScene("Credits");
+        } else
+        {
+            puzzleNum++;
+            SetUpShuttlePuzzle();
+        }
+        
     }
 
 

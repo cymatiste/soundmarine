@@ -18,11 +18,15 @@ public class Fish : MonoBehaviour
     private float tiltAdjust;
     private bool following = false;
     private bool entering = false;
+    private bool dancing = false;
+    //private Transform guide;
 
     
     // Start is called before the first frame update
     void Start()
     {
+       // GameObject emptyGO = new GameObject();
+        //guide = emptyGO.transform;
         transform.localScale = transform.localScale * Random.Range(0.75f, 1.25f);
         //baselineX = transform.position.x;
         //baselineY = transform.position.y;
@@ -32,6 +36,12 @@ public class Fish : MonoBehaviour
         followBobSpeed = Random.Range(0.5f, 2f);
         tiltVariance = 0.003f;// Random.Range(5f, 10f);
         tiltAdjust = Random.Range(0f, 5f);
+    }
+
+    public void Dance()
+    {
+        //Debug.Log("   .dancing!");
+        dancing = true;
     }
 
     public void SpawnAt(float spawnX, float spawnY, float spawnZ, int spawnDir, float spawnSpeed)
@@ -93,11 +103,15 @@ public class Fish : MonoBehaviour
     {
         float targetY = baselineY + yVariance * Mathf.Sin(Time.time * (following ? followBobSpeed : 0.1f) + sineAdjust);
         float targetZ = transform.localPosition.z;// + 0.0001f * Mathf.Sin(transform.position.x);
+        
         if(following || entering)
         {
             float targetX = entering
             ? Mathf.Max(baselineX, transform.localPosition.x - Mathf.Min(0.0005f, (transform.localPosition.x - baselineX) / 200f))
             : baselineX;// + 0.005f*Mathf.Sin(Time.time * followBobSpeed/200f + sineAdjust*5f) 
+
+            //guide.position = new Vector3(targetX - 0.1f, targetY * 2f, targetZ);
+            //transform.LookAt(guide);
 
             transform.localPosition = new Vector3(targetX, targetY, targetZ);
         } else
