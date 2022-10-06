@@ -8,6 +8,7 @@ public class VolcanoSequence : MonoBehaviour
     public GameObject dreamArt1;
     public GameObject dreamArt2;
     public GameObject dreamer;
+    public GameObject dancer;
 
     [Range(0.0f, 1f)]
     public float cycleSpeed = 0.025f;
@@ -38,7 +39,19 @@ public class VolcanoSequence : MonoBehaviour
     private int OUT = 2;
     private int NONE = 0;
     private bool breathingIn = false;
+    private bool holdingIn = false;
+    private bool holdingOut = false;
     private bool instructionsDone = false;
+    private float minChestR = 3f;
+    private float maxChestR = -3.89f;
+    private float minArmsR = 0f;
+    private float maxArmsR = 6.2f;
+    private float minHeadR = 20f;
+    private float maxHeadR = -20f;
+    public GameObject dreamerChest;
+    public GameObject dreamerHead;
+    public GameObject dreamerLeftArm;
+    public GameObject dreamerRightArm;
 
     // phases:
     // 0: panning in
@@ -56,7 +69,7 @@ public class VolcanoSequence : MonoBehaviour
     private float inTime = 0f;
     private float outTime = 0f;
 
-
+    private float breathPercent = 0f;
 
     private UnityEngine.Audio.AudioMixerGroup pitchBendGroup;
 
@@ -189,21 +202,22 @@ public class VolcanoSequence : MonoBehaviour
         {
             BreatheIn();
         }
-        
-        float inStretch = 0.2f * (inBreath.time / (inBreath.clip.length));
-        float outStretch = 0.2f * (outBreath.time / (outBreath.clip.length));
-        float xScaleTarget = breathingIn ? dreamerStartScale.x * (0.9f + inStretch) : dreamerStartScale.x * (1.1f - outStretch);
-        float xScale = xScaleTarget;
-        //Debug.Log(dreamer.transform.localScale.x + " VS " + xScaleTarget);
-        if ((Mathf.Abs(dreamer.transform.localScale.x - xScaleTarget) > 0.001f))
-        {
-            xScale = dreamer.transform.localScale.x + (xScaleTarget - dreamer.transform.localScale.x) / 10f;
-            Debug.Log("TWEENING.");
-        }
-        //Debug.Log("inStretch: " + inStretch + ",   outStretch: " + outStretch + ",   xScale: " + (xScale / dreamerStartScale.x));
-        //dreamer.transform.localScale = new Vector3(xScale, dreamer.transform.localScale.y, dreamer.transform.localScale.z);
 
-        
+
+        breathPercent = (scenePhase == 0 || scenePhase == 2)
+            ? breathPercent + (0.5f - breathPercent) / 30f
+            : (breathingIn) 
+                ? (inBreath.time / inBreath.clip.length) 
+                : 1 - (outBreath.time / outBreath.clip.length);
+        Vector3 chestR = new Vector3(0, 0, minChestR + (maxChestR - minChestR) * breathPercent);
+        Vector3 headR = new Vector3(0, 0, minHeadR + (maxHeadR - minHeadR) * breathPercent);
+        Vector3 armsR = new Vector3(0, 0, minArmsR + (maxArmsR - minArmsR) * breathPercent);
+
+        dreamerChest.transform.rotation = Quaternion.Euler(chestR);
+        dreamerHead.transform.rotation = Quaternion.Euler(headR);
+        dreamerLeftArm.transform.rotation = Quaternion.Euler(armsR);
+        dreamerRightArm.transform.rotation = Quaternion.Euler(armsR);
+
 
         if (scenePhase==1 && breatheSpeed < 0.55f)
         {
@@ -359,6 +373,8 @@ public class VolcanoSequence : MonoBehaviour
             g.SetActive(false);
         }
         gameObject.GetComponent<GameManager>().PanToShuttle();
+        dreamer.SetActive(false);
+        dancer.SetActive(true);
     }
 
     private IEnumerator HideButton(GameObject btn, float s)

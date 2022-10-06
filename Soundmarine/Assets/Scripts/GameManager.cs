@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         float ballTargetY = diverBall.transform.position.y + (shuttleCameraPos.y - bathyspherePos.y);
         LeanTween.moveLocal(diverBall, dockPos, 10f).setEase(LeanTweenType.easeInOutQuad);
         GameObject cable = GameObject.Find("cable");
-        LeanTween.scaleY(cable, 0f, 10f).setEase(LeanTweenType.easeInOutQuad);
+        LeanTween.scaleY(cable, 0.001f, 9.95f).setEase(LeanTweenType.easeInOutQuad);
     }
 
     public void SetUpShuttlePuzzle()
