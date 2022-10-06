@@ -6,6 +6,7 @@ TagManager:
   tags:
   - drag
   - drop
+  - nodrag
   layers:
   - Default
   - TransparentFX

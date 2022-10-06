@@ -22,6 +22,7 @@ public class VolcanoSequence : MonoBehaviour
 
     public GameObject inBtn;
     public GameObject outBtn;
+    public GameObject instructions;
 
     public ParticleSystem rings;
 
@@ -37,6 +38,7 @@ public class VolcanoSequence : MonoBehaviour
     private int OUT = 2;
     private int NONE = 0;
     private bool breathingIn = false;
+    private bool instructionsDone = false;
 
     // phases:
     // 0: panning in
@@ -61,6 +63,8 @@ public class VolcanoSequence : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Color textCol = instructions.GetComponent<TMPro.TextMeshProUGUI>().color;
+        instructions.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(textCol.r, textCol.g, textCol.b, 0f);
 
         inCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
         outCount.GetComponent<TMPro.TextMeshProUGUI>().text = "";
@@ -89,11 +93,27 @@ public class VolcanoSequence : MonoBehaviour
         Debug.Log("volcano sequence started, scenePhase is "+scenePhase);
     }
 
+    private IEnumerator HideInstructionsAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        instructions.SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (scenePhase == 1)
         {
+            Color textCol = instructions.GetComponent<TMPro.TextMeshProUGUI>().color;
+            if (instructions.activeSelf)
+            {
+                if(textCol.a <= 1f && textCol.a > 0)
+                {
+                    instructions.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(textCol.r, textCol.g, textCol.b, Mathf.Min(1f,textCol.a + 0.01f*(instructionsDone ? -1f : 1f) ) );
+                    Debug.Log("instructions a " + textCol.a);
+                }                 
+            } 
+
             dreamArt1.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, (breathVol - 0.25f) * Mathf.Sin(Time.time * cycleSpeed));
             dreamArt2.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, (breathVol - 0.25f) * Mathf.Cos(Time.time * cycleSpeed*1.5f));
         }
@@ -217,12 +237,20 @@ public class VolcanoSequence : MonoBehaviour
         btnPressed = IN;
         BreatheIn();
         Debug.Log("PRESS IN");
+        if (!instructionsDone)
+        {
+            instructionsDone = true;
+        }
     }
     public void PressOut()
     {
         btnPressed = OUT;
         BreatheOut();
         Debug.Log("PRESS OUT");
+        if (!instructionsDone)
+        {
+            instructionsDone = true;
+        }
     }
     public void ReleaseIn()
     {
@@ -305,6 +333,9 @@ public class VolcanoSequence : MonoBehaviour
             outCount.SetActive(true);
             rings.gameObject.SetActive(true);
             rings.Play();
+            Color textCol = instructions.GetComponent<TMPro.TextMeshProUGUI>().color;
+            instructions.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(textCol.r, textCol.g, textCol.b, 0.001f);
+            //StartCoroutine(HideInstructionsAfter(5f));
         } else
         {
             scenePhase = 2;
@@ -357,7 +388,8 @@ public class VolcanoSequence : MonoBehaviour
         LeanTween.scale(t.gameObject, 2f * t.localScale, 2f).setEase(LeanTweenType.easeInOutBack);
         LeanTween.scale(t.gameObject, 1f * t.localScale, 2f).setDelay(2f).setEase(LeanTweenType.easeOutSine);
         LeanTween.moveY(t.gameObject, t.localPosition.y + 10f, 30f).setEase(LeanTweenType.easeInCirc).setDelay(3f).setOnComplete(RemoveLastWord);
-        bubbles.Play();
+        t.gameObject.GetComponent<AudioSource>().pitch = Random.Range(0.8f, 1.2f);
+        t.gameObject.GetComponent<AudioSource>().Play();
     }
 
     private void RemoveLastWord()

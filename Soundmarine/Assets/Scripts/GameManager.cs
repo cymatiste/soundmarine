@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
         puzzle = GameObject.Find("puzzle");
         puzzleWords = wordSets[puzzleNum];
         player = puzzle.GetComponent<Player>();
+        wordSets[0].gameObject.SetActive(true);
         whale.SetActive(false);
 
         Camera.main.transform.localPosition = shuttleCameraPos;
@@ -83,11 +84,13 @@ public class GameManager : MonoBehaviour
         LeanTween.rotateY(Camera.main.gameObject, -1.34f, 10f);
         float ballTargetY = diverBall.transform.position.y + (shuttleCameraPos.y - bathyspherePos.y);
         LeanTween.moveLocal(diverBall, dockPos, 10f).setEase(LeanTweenType.easeInOutQuad);
+        GameObject cable = GameObject.Find("cable");
+        LeanTween.scaleY(cable, 0f, 10f).setEase(LeanTweenType.easeInOutQuad);
     }
 
     public void SetUpShuttlePuzzle()
     {
-        Debug.Log("do it");
+        Debug.Log("SetUpShuttlePuzzle "+puzzleNum);
         //Camera.main.transform.localPosition = shuttleCameraPos;
         diverBall.SetActive(false);
         dancerSeat.SetActive(true);
@@ -98,9 +101,9 @@ public class GameManager : MonoBehaviour
         
         int clipIndex = 0;
         List<AudioClip> instrument =
-            (puzzleNum == 0 || puzzleNum == 4)
+            (puzzleNum == 0 || puzzleNum == 3)
             ? instrument_puzzle1
-            : (puzzleNum == 1 || puzzleNum == 5)
+            : (puzzleNum == 1 || puzzleNum == 4)
                 ? instrument_puzzle2
                 : instrument_puzzle3;
                   
@@ -129,31 +132,41 @@ public class GameManager : MonoBehaviour
 
     public void PuzzleComplete()
     {
-        // hide all the red herring words
+        Debug.Log("PuzzleComplete!");
+        
         foreach(Transform t in puzzleWords.transform)
         {
-            if(t.GetComponent<Word>() != null && t.GetComponent<Word>().GetSpot() == null)
+            // words in the completed puzzle should no longer be draggable
+            t.gameObject.tag = "nodrag";
+            // hide all the red herring words
+            if (t.GetComponent<Word>() != null && t.GetComponent<Word>().GetSpot() == null)
             {
-                Debug.Log(" hiding " + t.gameObject.name);
                 t.gameObject.SetActive(false);
             }
         }
 
         LeanTween.moveZ(puzzleWords, puzzleWords.transform.position.z - 0.25f, 1f).setEaseInCirc();
-        LeanTween.moveY(puzzleWords, puzzleWords.transform.position.y + 1f, 8f).setDelay(12f).setEase(LeanTweenType.easeInCirc).setOnComplete(GameOver);
+        LeanTween.moveY(puzzleWords, puzzleWords.transform.position.y + 1f, 8f).setDelay(12f).setEase(LeanTweenType.easeInCirc).setOnComplete(Advance);
+        StartCoroutine(FishFollowPuzzleIn(8f));
 
         GameObject.Find("GameManager").GetComponent<FollowingFish>().Dance();
 
     }
 
-    public void GameOver()
+    public IEnumerator FishFollowPuzzleIn(float secs)
     {
+        yield return new WaitForSeconds(secs);
         GameObject.Find("GameManager").GetComponent<FollowingFish>().ReleaseAll();
+    }
+
+    public void Advance()
+    {
+        Debug.Log("whale time");
         GameObject cam = Camera.main.gameObject;
         //puzzle.SetActive(false);
         whale.SetActive(true);
-        whale.transform.localPosition = new Vector3(4f, whale.transform.localPosition.y, whale.transform.localPosition.z);
-        LeanTween.moveLocalX(whale, whale.transform.localPosition.x -8f, 12f);
+        whale.transform.localPosition = new Vector3(3f, whale.transform.localPosition.y, whale.transform.localPosition.z);
+        LeanTween.moveLocalX(whale, whale.transform.localPosition.x -6f, 12f);
         //LeanTween.moveY(cam, 0.05f, 1).setEaseInSine();
         //LeanTween.moveZ(cam, -0.5f, 1).setEaseInSine();
         //LeanTween.rotateX(cam, 2.43f, 1).setEaseInSine();
@@ -169,6 +182,7 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene("Credits");
         } else
         {
+            Debug.Log("please set up next puzzle: " + puzzleNum);
             puzzleNum++;
             SetUpShuttlePuzzle();
         }

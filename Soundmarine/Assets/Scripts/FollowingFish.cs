@@ -16,15 +16,20 @@ public class FollowingFish : MonoBehaviour
     private float maxY = 0.09f;
     private float minX = 0.05f;
     private float maxX = 0.16f;
-    private float minZ = -0.0001f;
-    private float maxZ = 0.0001f;
-    
+    private float frontMinZ = -0.06f;
+    private float frontMaxZ = -0.03f;
+    private float backMinZ = 0.03f;
+    private float backMaxZ = 0.06f;
+    private SubControl subControl;
+    private GameObject sub;
+
     private int BUMP_NUMBER = 9;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        sub = GameObject.Find("miniSub");
+        subControl = sub.GetComponent<SubControl>();
     }
 
     public void More()
@@ -39,6 +44,10 @@ public class FollowingFish : MonoBehaviour
 
     public void ReleaseAll()
     {
+        foreach(Fish f in followingFish)
+        {
+            f.Rise();
+        }
         numFollowing = 0;
     }
 
@@ -56,7 +65,8 @@ public class FollowingFish : MonoBehaviour
             newFish.transform.localScale = newFish.transform.localScale * Random.Range(0.25f, 0.35f);
             Vector3 subPos = theSub.position;
             //newFish.SpawnAt(subPos.x + Random.Range(minX, maxX), subPos.y + Random.Range(minY, maxY), subPos.z + Random.Range(minZ, maxZ), -1, 0f);
-            newFish.SpawnAt(Random.Range(minX, maxX), Random.Range(minY, maxY), Random.Range(minZ, maxZ), -1, 0f);
+            float targetZ = Random.Range(0f, 1f) > 0.5f ? Random.Range(frontMinZ, frontMaxZ) : Random.Range(backMinZ, backMaxZ);
+            newFish.SpawnAt(Random.Range(minX, maxX), Random.Range(minY, maxY), targetZ, -1, 0f);
             newFish.Follow(true);
             newFish.name = "fishy" + followingFish.Count;
             followingFish.Add(newFish);
@@ -67,10 +77,12 @@ public class FollowingFish : MonoBehaviour
     {
         followingFish.Remove(f);
         freeFish.Add(f);
-        Vector3 newSpawnPos = f.transform.position;
-        f.Follow(false);
+        
         f.transform.SetParent(GameObject.Find("fish").transform);
-        f.SpawnAt(newSpawnPos.x, newSpawnPos.y, newSpawnPos.z, 1, 0.0001f);
+        Vector3 newSpawnPos = f.transform.localPosition;
+        f.Follow(false);
+        f.SpawnAt(newSpawnPos.x, newSpawnPos.y, newSpawnPos.z, -1, subControl.GetSpeed()*sub.transform.localScale.x);
+        f.Release();
     }
 
     public void Dance()

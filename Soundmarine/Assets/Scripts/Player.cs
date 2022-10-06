@@ -6,7 +6,8 @@ public class Player : MonoBehaviour
 {
 
     public List<Transform> spotSets;
-    public float loopSeconds = 20f;
+    public List<float> loopSeconds;
+    public List<float> loopBeats;
     public AudioSource beat1;
     public AudioSource beat2;
     public bool playing = false;
@@ -15,7 +16,6 @@ public class Player : MonoBehaviour
     
     private float loopTimer = 0f;
     private int loopIndex = 0;
-    private int loopBeats = 16;
     private Word prevWord;
     private DropDot prevDot;
     private List<DropSpot> spots;
@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        playing = false;
         foreach(Transform t in spotSets)
         {
             t.gameObject.SetActive(false);
@@ -79,12 +80,12 @@ public class Player : MonoBehaviour
         }
   
 
-        if (loopTimer > loopSeconds)
+        if (loopTimer > loopSeconds[puzzleNum])
         {
             loopIndex = 0;
             loopTimer = 0f;
 
-            Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
+            //Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
 
             if (NumWordsCorrect() == dots.Count)
             {
@@ -116,9 +117,9 @@ public class Player : MonoBehaviour
         }
 
         int targetIndex = loopIndex;
-        if ((loopTimer / loopSeconds) * loopBeats*2 >= targetIndex)
+        if ((loopTimer / loopSeconds[puzzleNum]) * loopBeats[puzzleNum] * 2 >= targetIndex)
         {
-            //Debug.Log("*** " + loopIndex + ", " + loopTimer);
+            //Debug.Log("*** " + loopIndex + ", " + loopTimer+", "+dots+", playing ? "+playing);
             AudioSource beat = (loopIndex % 2 == 0) ? beat1 : beat2;
             beat.Play();
 
@@ -155,7 +156,7 @@ public class Player : MonoBehaviour
                     }                  
                 }
             }
-                loopIndex++;
+            loopIndex++;
         }
         loopTimer += Time.deltaTime;
     }
@@ -187,7 +188,22 @@ public class Player : MonoBehaviour
 
     public int NumWordsPlaced()
     {
-        return (words == null) ? 0 : words.Count;
+        int numPlaced = 0;
+        if(dots == null)
+        {
+            return 0;
+        } else
+        {
+            foreach(DropDot d in dots)
+            {
+                if (d.GetObj() != null)
+                {
+                    numPlaced++;
+                }
+            }
+        }
+        return numPlaced;
+       
     }
 
     public int NumWordsCorrect()

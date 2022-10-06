@@ -19,23 +19,29 @@ public class Fish : MonoBehaviour
     private bool following = false;
     private bool entering = false;
     private bool dancing = false;
+    private bool rising = false;
+    private bool released = false;
+    private float releaseAcceleration;
+    private float releaseX;
+
     //private Transform guide;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
-       // GameObject emptyGO = new GameObject();
+        // GameObject emptyGO = new GameObject();
         //guide = emptyGO.transform;
         transform.localScale = transform.localScale * Random.Range(0.75f, 1.25f);
         //baselineX = transform.position.x;
         //baselineY = transform.position.y;
         //baselineZ = transform.position.z;
-        sineAdjust = Random.Range(0f,5f);
+        sineAdjust = Random.Range(0f, 5f);
         yVariance = following ? 0.01f : Random.Range(0.1f, 0.3f);
         followBobSpeed = Random.Range(0.5f, 2f);
         tiltVariance = 0.003f;// Random.Range(5f, 10f);
         tiltAdjust = Random.Range(0f, 5f);
+        releaseAcceleration = Random.Range(0.000001f, 0.000003f);
     }
 
     public void Dance()
@@ -44,10 +50,29 @@ public class Fish : MonoBehaviour
         dancing = true;
     }
 
+    public void Release()
+    {
+        following = false;
+        entering = false;
+        releaseX = transform.position.x;
+        released = true;
+    }
+
+    public void Rise()
+    {
+        rising = true;
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
     public void SpawnAt(float spawnX, float spawnY, float spawnZ, int spawnDir, float spawnSpeed)
     {
+        Debug.Log("spawning " + gameObject.name + " at x " + spawnX + ", y " + spawnY + ", z " + spawnZ + ", dir " + spawnDir + ", speed " + spawnSpeed);
         transform.localPosition = new Vector3(spawnX, spawnY, spawnZ);
-        transform.localScale = new Vector3(transform.localScale.x * spawnDir, transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x)* spawnDir, transform.localScale.y, transform.localScale.z);
         baselineX = spawnX;
         baselineY = spawnY;
         baselineZ = spawnZ;
@@ -72,6 +97,17 @@ public class Fish : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (released)
+        {
+            Debug.Log(gameObject.name + " released! " + following + ", " + entering + ", "+rising+", speed " + speed+" y "+ transform.position.y);
+
+            speed += releaseAcceleration;
+            if(Mathf.Abs(transform.position.x - releaseX) > 3f)
+            {
+                Debug.Log(gameObject.name + "far enough away and deactivating ( "+transform.position.x+" VS "+releaseX+" )");
+                gameObject.SetActive(false);
+            }
+        }
         if (following || entering)
         {
             Bob();
@@ -101,7 +137,7 @@ public class Fish : MonoBehaviour
    
     private void Bob()
     {
-        float targetY = baselineY + yVariance * Mathf.Sin(Time.time * (following ? followBobSpeed : 0.1f) + sineAdjust);
+        float targetY = baselineY + yVariance * Mathf.Sin(Time.time * (following ? followBobSpeed : 0.1f) + sineAdjust) + (rising ?  speed : 0);
         float targetZ = transform.localPosition.z;// + 0.0001f * Mathf.Sin(transform.position.x);
         
         if(following || entering)
