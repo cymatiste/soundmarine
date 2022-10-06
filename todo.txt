@@ -1,12 +1,7 @@
 TO DO
 
-- Elise's new music
-- Elise's new sounds
 - Finale
-
-- words need to already be there on first puzzle
 - REMOVE pitch shifting on bad notes
-- make index.html size to 100% not a hard number
 - switch to sideways dancer inside bell, 
 - breathing anim
 - camera angle / words placement more evenly around sub

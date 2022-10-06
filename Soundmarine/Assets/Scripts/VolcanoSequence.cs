@@ -201,7 +201,7 @@ public class VolcanoSequence : MonoBehaviour
             Debug.Log("TWEENING.");
         }
         //Debug.Log("inStretch: " + inStretch + ",   outStretch: " + outStretch + ",   xScale: " + (xScale / dreamerStartScale.x));
-        dreamer.transform.localScale = new Vector3(xScale, dreamer.transform.localScale.y, dreamer.transform.localScale.z);
+        //dreamer.transform.localScale = new Vector3(xScale, dreamer.transform.localScale.y, dreamer.transform.localScale.z);
 
         
 
