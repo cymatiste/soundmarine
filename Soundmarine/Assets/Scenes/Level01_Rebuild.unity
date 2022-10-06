@@ -33413,24 +33413,54 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1eb2663510df84a07a23e32b6c2d4e31, type: 3}
   - {fileID: 8300000, guid: e4afba368dd744de583809a3bc6180e2, type: 3}
   instrument_puzzle2:
-  - {fileID: 8300000, guid: 0cf3bed3cb03b4bb6ba3e47ac2b61805, type: 3}
-  - {fileID: 8300000, guid: de435e1a0645645bab5a4f5d5f41e5fd, type: 3}
-  - {fileID: 8300000, guid: 00a54bcd1f6c943ba884ce3eee1c9934, type: 3}
-  - {fileID: 8300000, guid: 73b99814f1bba4615870e823d5a41cfa, type: 3}
-  - {fileID: 8300000, guid: 2b077efba6fa440609360a21a365ff5a, type: 3}
-  - {fileID: 8300000, guid: c2cea5bfa746f4455bc82edbdef13493, type: 3}
-  - {fileID: 8300000, guid: ea8f92b696dd043e4bc92546949cf2f7, type: 3}
-  - {fileID: 8300000, guid: ddbe342a60b7348088ce2e75a3260e3f, type: 3}
-  - {fileID: 8300000, guid: 19d61da0f6ea445ae9131b48811099bf, type: 3}
+  - {fileID: 8300000, guid: 241f49fbdb8d53b4fafaf1818623df0f, type: 3}
+  - {fileID: 8300000, guid: 6561a38b50f58ab4bb8b41b77325a035, type: 3}
+  - {fileID: 8300000, guid: afa685fb4164cd649b76e1f73a761d58, type: 3}
+  - {fileID: 8300000, guid: 8a167882705dcd541a333523a2e5ba6a, type: 3}
+  - {fileID: 8300000, guid: a9ae0d5362fdd404cba2a06e21b42e17, type: 3}
+  - {fileID: 8300000, guid: 8bee9d782153ba349857394b8ace614c, type: 3}
+  - {fileID: 8300000, guid: 14c171c2c8d634e468fb08e16c71f548, type: 3}
+  - {fileID: 8300000, guid: 1ef0b803e17106244810ffd6b9f4fb1b, type: 3}
+  - {fileID: 8300000, guid: 95d59898e0cc1a1448edda01c730e3f2, type: 3}
   instrument_puzzle3:
-  - {fileID: 8300000, guid: 111a16e10fd7c3949a94bca38b29a63b, type: 3}
-  - {fileID: 8300000, guid: db9b44f90c1d96242bfdfad1f867c9d2, type: 3}
-  - {fileID: 8300000, guid: 18e7b52249472724f981ac97ae00e8fa, type: 3}
-  - {fileID: 8300000, guid: 05b99d9a7926c8f4883c9b979bc347b3, type: 3}
-  - {fileID: 8300000, guid: 18e7b52249472724f981ac97ae00e8fa, type: 3}
-  - {fileID: 8300000, guid: db9b44f90c1d96242bfdfad1f867c9d2, type: 3}
-  - {fileID: 8300000, guid: 111a16e10fd7c3949a94bca38b29a63b, type: 3}
-  instrument_puzzle4: []
+  - {fileID: 8300000, guid: 68bdccb0616db574a8935cf365bcf20c, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: b1f8438b447fd3243b49d60fdf1125b9, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 68bdccb0616db574a8935cf365bcf20c, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: b1f8438b447fd3243b49d60fdf1125b9, type: 3}
+  instrument_puzzle4:
+  - {fileID: 8300000, guid: 89bd8141f55c5b04c9614526efefd144, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 3f32e926ef93fff4684d16d734f6123d, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 6aab3f6a5c9cdb74aad32d0142564469, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 782b758373706284f88af11e541b607f, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  - {fileID: 8300000, guid: 532697da311f9c9429f231e4a2504318, type: 3}
+  instrument_puzzle5:
+  - {fileID: 8300000, guid: 64e14966ab0f6cd47a791213a98288cb, type: 3}
+  - {fileID: 8300000, guid: 94f14e3b6e5abfb408484e9a61fa0e17, type: 3}
+  - {fileID: 8300000, guid: b17d95e64dfac2143858aef6a6988e66, type: 3}
+  - {fileID: 8300000, guid: 516e16f599808ae4ea3c7fe982abeffa, type: 3}
+  - {fileID: 8300000, guid: 722b77bfba533e543ab9e9226688eb05, type: 3}
+  - {fileID: 8300000, guid: dfac75c0d4fc24742bf69a59f77e6318, type: 3}
+  - {fileID: 8300000, guid: 47da573cf308813478ba347a6efec9de, type: 3}
+  - {fileID: 8300000, guid: 7cd5a690c565bf9488a9a4700132f28b, type: 3}
+  - {fileID: 8300000, guid: 3af3540e8791c9a418662bd0d6ec4fd5, type: 3}
+  - {fileID: 8300000, guid: a29d39458e466094d9d54352cbb1f2d7, type: 3}
+  - {fileID: 8300000, guid: 393e7335e6f25e1408907fd0f08afcc7, type: 3}
+  - {fileID: 8300000, guid: fa33552d102b6a941833d6d875ca7faf, type: 3}
+  - {fileID: 8300000, guid: d8c09b0c5ab993d4a8f0cf2cc99e5140, type: 3}
+  - {fileID: 8300000, guid: 12474c27bece98c429251abc2a8fbae1, type: 3}
   diverBall: {fileID: 883416196}
   dancerSeat: {fileID: 195374795}
   whale: {fileID: 919132148619124123}

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public List<AudioClip> instrument_puzzle2;
     public List<AudioClip> instrument_puzzle3;
     public List<AudioClip> instrument_puzzle4;
+    public List<AudioClip> instrument_puzzle5;
 
     public GameObject diverBall;
     public GameObject dancerSeat;
