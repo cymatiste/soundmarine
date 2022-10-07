@@ -1,9 +1,6 @@
 TO DO
 
 - Finale
-- REMOVE pitch shifting on bad notes
-- switch to sideways dancer inside bell, 
-- breathing anim
 - camera angle / words placement more evenly around sub
 - switch note assigned to "balance"
 - and remove repeats in puzzle 2
@@ -13,13 +10,14 @@ TO DO
 - puzzle 5 doesn't need to be so spread out x
 - gaps between in and out breath
 
-
 - space out puzzle 1 rows more vertically?
 - space puzzle 3 words together more closely horizontally
 - make puzzle 2 words larger where possible?
 
 - transition in new puzzle word groups
 - add cave (- adjust left edge, add something behind it, duplicate cave on the right for exiting, double cave for looping inside.
+
+- phrazle rules
 
 BUGS
 

@@ -42,12 +42,12 @@ public class VolcanoSequence : MonoBehaviour
     private bool holdingIn = false;
     private bool holdingOut = false;
     private bool instructionsDone = false;
-    private float minChestR = 3f;
+    private float minChestR = 8.5f;
     private float maxChestR = -3.89f;
     private float minArmsR = 0f;
     private float maxArmsR = 6.2f;
-    private float minHeadR = 20f;
-    private float maxHeadR = -20f;
+    private float minHeadR = 35f;
+    private float maxHeadR = -35f;
     public GameObject dreamerChest;
     public GameObject dreamerHead;
     public GameObject dreamerLeftArm;
@@ -204,11 +204,14 @@ public class VolcanoSequence : MonoBehaviour
         }
 
 
-        breathPercent = (scenePhase == 0 || scenePhase == 2)
-            ? breathPercent + (0.5f - breathPercent) / 30f
+        float targetPercent = (scenePhase == 0 || scenePhase == 2)
+            ? 0.5f
             : (breathingIn) 
                 ? (inBreath.time / inBreath.clip.length) 
                 : 1 - (outBreath.time / outBreath.clip.length);
+
+        breathPercent = breathPercent + (targetPercent - breathPercent) / 60f;
+
         Vector3 chestR = new Vector3(0, 0, minChestR + (maxChestR - minChestR) * breathPercent);
         Vector3 headR = new Vector3(0, 0, minHeadR + (maxHeadR - minHeadR) * breathPercent);
         Vector3 armsR = new Vector3(0, 0, minArmsR + (maxArmsR - minArmsR) * breathPercent);
