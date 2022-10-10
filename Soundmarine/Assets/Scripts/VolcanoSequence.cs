@@ -123,7 +123,7 @@ public class VolcanoSequence : MonoBehaviour
                 if(textCol.a <= 1f && textCol.a > 0)
                 {
                     instructions.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(textCol.r, textCol.g, textCol.b, Mathf.Min(1f,textCol.a + 0.01f*(instructionsDone ? -1f : 1f) ) );
-                    Debug.Log("instructions a " + textCol.a);
+                    //Debug.Log("instructions a " + textCol.a);
                 }                 
             } 
 

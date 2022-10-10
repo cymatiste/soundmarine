@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     private List<DropSpot> spots;
     private List<DropDot> dots;
     private int puzzleNum;
+    private int numPuzzlesComplete;
 
 
     private List<Word> words;
@@ -67,6 +68,11 @@ public class Player : MonoBehaviour
         playing = true;
     }
 
+    public int NumPuzzlesComplete()
+    {
+        return numPuzzlesComplete;
+    }
+
     public Transform GetSpotSet()
     {
         return spotSets[puzzleNum];
@@ -85,7 +91,7 @@ public class Player : MonoBehaviour
             loopIndex = 0;
             loopTimer = 0f;
 
-            //Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
+            Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
 
             if (NumWordsCorrect() == dots.Count)
             {
@@ -102,6 +108,7 @@ public class Player : MonoBehaviour
                     }
                     */
                     spotSets[puzzleNum].gameObject.SetActive(false);
+                    numPuzzlesComplete++;
                     GameObject.Find("GameManager").GetComponent<GameManager>().PuzzleComplete();
                     lastRun = true;
                 } else
@@ -166,7 +173,7 @@ public class Player : MonoBehaviour
         if (word != null)
         {
             words.Add(word);
-            Debug.Log("))):  " + word.name);
+            //Debug.Log("))):  " + word.name);
             word.Highlight();
             if (!word.GetComponent<AudioSource>().isPlaying)
             {

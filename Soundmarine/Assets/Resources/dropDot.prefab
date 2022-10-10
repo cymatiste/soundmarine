@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1319496402127507107}
   - component: {fileID: 500616535620578572}
   - component: {fileID: 6498088506471925409}
-  - component: {fileID: 7588116642803402314}
   - component: {fileID: -1444012712124170575}
   m_Layer: 0
   m_Name: dropDot
@@ -86,19 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &7588116642803402314
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1122057501874457150}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-1444012712124170575
 MonoBehaviour:
   m_ObjectHideFlags: 0

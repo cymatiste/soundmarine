@@ -35,8 +35,9 @@ public class GameManager : MonoBehaviour
     private Vector3 bathyspherePos = new Vector3(0,-2.63f,-0.67f);
     private Vector3 shuttleCameraPos = new Vector3(0.018f, 0.02f, -0.67f);
 
-    private Vector3 dockPos = new Vector3(-0.0078f, 2.6f, 0f);
-
+    //private Vector3 dockPos = new Vector3(-0.0078f, 2.6f, 0f);
+    private Vector3 dockPos = new Vector3(0f, -0.04f, 0.03f);
+    
     private Player player;
     private GameObject puzzle;
     private GameObject puzzleWords;
@@ -83,10 +84,19 @@ public class GameManager : MonoBehaviour
         volcanoSequence.Exit();
         LeanTween.moveLocal(Camera.main.gameObject, shuttleCameraPos, 10f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(SetUpShuttlePuzzle);
         LeanTween.rotateY(Camera.main.gameObject, -1.34f, 10f);
+        
         float ballTargetY = diverBall.transform.position.y + (shuttleCameraPos.y - bathyspherePos.y);
-        LeanTween.moveLocal(diverBall, dockPos, 10f).setEase(LeanTweenType.easeInOutQuad);
+        
+        GameObject insideBall = GameObject.Find("ball");
         GameObject cable = GameObject.Find("cable");
-        LeanTween.scaleY(cable, 0.001f, 9.95f).setEase(LeanTweenType.easeInOutQuad);
+        Vector3 ballScale = insideBall.transform.localScale;
+        Vector3 dockScale = ballScale*0.9f;
+        Vector3 cablePos = cable.transform.localPosition;
+        Vector3 dockCablePos = new Vector3(-0.0055f, cablePos.y, cablePos.y + 0.06f);
+        LeanTween.moveLocal(insideBall, dockPos, 10f).setEase(LeanTweenType.easeInOutQuad);
+        LeanTween.scale(insideBall, dockScale, 10f).setEase(LeanTweenType.easeInOutQuad);
+        LeanTween.scaleY(cable, 0f, 9.985f).setEase(LeanTweenType.easeInOutQuad);
+        LeanTween.moveLocal(cable, dockCablePos, 10f).setEase(LeanTweenType.easeInOutQuad);
     }
 
     public void SetUpShuttlePuzzle()

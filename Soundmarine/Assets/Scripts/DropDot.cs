@@ -40,7 +40,7 @@ public class DropDot : MonoBehaviour
     }
     public bool Correct()
     {
-        Debug.Log("CORRECT? "+droppedObj.name + " text " + droppedObj.GetComponent<Word>().wordText + " == " + targetWord + " ---> " + (droppedObj.GetComponent<Word>().wordText == targetWord));
+        //Debug.Log("CORRECT? "+droppedObj.name + " text " + droppedObj.GetComponent<Word>().wordText + " == " + targetWord + " ---> " + (droppedObj.GetComponent<Word>().wordText == targetWord));
         return (droppedObj.GetComponent<Word>().wordText == targetWord);
     }
 }

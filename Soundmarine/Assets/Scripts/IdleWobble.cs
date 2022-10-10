@@ -42,6 +42,7 @@ public class IdleWobble : MonoBehaviour
 
     public void ResetPos()
     {
+        Debug.Log("IdleWobble on "+wobbler.name+" ResetPos from " + wobbler.localPosition + " to " + centre);
         wobbler.localPosition = centre;
     }
 

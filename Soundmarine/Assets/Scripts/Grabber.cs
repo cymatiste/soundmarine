@@ -10,6 +10,8 @@ public class Grabber : MonoBehaviour
     public AudioSource dropSound;
     public AudioSource softGrabSound;
 
+    private Vector3 dragPoint;
+
     private void Start()
     {
         if (dropEffect != null)
@@ -42,20 +44,22 @@ public class Grabber : MonoBehaviour
 
                     if (hit.collider != null && hit.collider.CompareTag("drag"))
                     {
-                        //Debug.Log("Picking up: " + selectedObject);
-                        
-
                         selectedObject = hit.collider.gameObject;
-                        selectedObject.GetComponent<Collider>().enabled = false;
-                        if(selectedObject.GetComponent<Rigidbody>()!= null)
-                        {
-                            selectedObject.GetComponent<Rigidbody>().isKinematic = true;
-                        }
-                        if (selectedObject.GetComponent<IdleWobble>() != null)
-                        {
-                            selectedObject.GetComponent<IdleWobble>().enabled = false;
-                        }
-                        selectedObject.transform.rotation = Quaternion.identity;
+                        dragPoint = selectedObject.transform.position - hit.point;
+                        Debug.Log("DRAGPOINT: h.p " + hit.point+", stp "+selectedObject.transform.position);
+                        DropSpot lds = selectedObject.GetComponent<Word>().GetLastSpot();
+                        DropDot ldd = selectedObject.GetComponent<Word>().GetLastDot();
+                        DropSpot ds = selectedObject.GetComponent<Word>().GetSpot();
+                        DropDot dd = selectedObject.GetComponent<Word>().GetDot();
+
+
+                        Debug.Log("Picking up: " + selectedObject);
+                        Debug.Log("          , spot: " + (ds == null ? "NULL" : ds.gameObject.name));
+                        Debug.Log("          , dot: " + (dd == null ? "NULL" : dd.gameObject.name));
+                        Debug.Log("          , prevSpot: " + (lds == null ? "NULL" : lds.gameObject.name));
+                        Debug.Log("          , prevDot: " + (ldd == null ? "NULL" : ldd.gameObject.name));
+
+                        selectedObject.GetComponent<Word>().PickUp();
 
                         /*
                         foreach (Transform child in selectedObject.transform)
@@ -75,7 +79,6 @@ public class Grabber : MonoBehaviour
                             softGrabSound.Play();
 
                             selectedWord.GetSpot().ClearWord(selectedWord, false, false);
-                            selectedWord.ClearSpot();
                         } else
                         {
                             grabSound.Play();
@@ -142,12 +145,9 @@ public class Grabber : MonoBehaviour
 
             if (!droppedOnTarget)
             {
+                Debug.Log("!droppedOnTarget");
                 selectedObject.transform.position = new Vector3(selectedObject.transform.position.x, selectedObject.transform.position.y, 0f);
-                if (selectedObject.GetComponent<IdleWobble>() != null)
-                {
-                    selectedObject.GetComponent<IdleWobble>().enabled = true;
-                    selectedObject.GetComponent<IdleWobble>().ResetPos();
-                }
+                selectedObject.GetComponent<Word>().PutDown();
                 DropSpot lastSpot = selectedObject.GetComponent<Word>().GetLastSpot();
                 if(lastSpot != null)
                 {
@@ -155,11 +155,6 @@ public class Grabber : MonoBehaviour
                 }
                 
             }
-            if (selectedObject.GetComponent<Rigidbody>() != null)
-            {
-                selectedObject.GetComponent<Rigidbody>().isKinematic = droppedOnTarget;
-            }
-            selectedObject.GetComponent<Collider>().enabled = true;
 
             /*
             foreach (Transform child in selectedObject.transform)
@@ -181,9 +176,10 @@ public class Grabber : MonoBehaviour
             //  follow the cursor
 
             Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(selectedObject.transform.position).z);
+
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position);
             Vector3 localized = selectedObject.transform.InverseTransformPoint(worldPosition);
-            selectedObject.transform.position = new Vector3(worldPosition.x, worldPosition.y, selectedObject.transform.position.z);
+            selectedObject.transform.position = new Vector3(worldPosition.x + dragPoint.x, worldPosition.y + dragPoint.y, selectedObject.transform.position.z);
         }
    
     }

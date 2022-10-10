@@ -1,6 +1,11 @@
 TO DO
 
+- Elise's new music
+- Elise's new sounds
 - Finale
+
+- play new VO
+- copy the present words into the "firstwords"
 - camera angle / words placement more evenly around sub
 - switch note assigned to "balance"
 - and remove repeats in puzzle 2
@@ -9,7 +14,9 @@ TO DO
 - puzzle 4 too slow
 - puzzle 5 doesn't need to be so spread out x
 - gaps between in and out breath
+- the effects are leaving little pixels on the corner
 
+- uneven sizes on words on puzzle 1
 - space out puzzle 1 rows more vertically?
 - space puzzle 3 words together more closely horizontally
 - make puzzle 2 words larger where possible?
@@ -17,8 +24,9 @@ TO DO
 - transition in new puzzle word groups
 - add cave (- adjust left edge, add something behind it, duplicate cave on the right for exiting, double cave for looping inside.
 
-- phrazle rules
-
 BUGS
 
 - WE and BLOOM disappeared after I moved I think BREATHE onto BLOOM around near the end! Then came back after re-shuffling.
+
+
+-2.613764

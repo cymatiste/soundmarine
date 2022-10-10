@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SubControl : MonoBehaviour
 {
-
-    public float speed = 0.01f;
     public Player player;
 
     // scenery edges (put these in a separate data class so they're not repeated in Fish etc.)
@@ -15,6 +13,7 @@ public class SubControl : MonoBehaviour
     private float leftX = -21f;
     private float rightX = -2.6f;
 
+    private float speed = 0.0003f;
     private float targetSpeed;
     private float workingSpeed;
     
@@ -35,12 +34,13 @@ public class SubControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        targetSpeed = speed * player.NumWordsPlaced();
+        targetSpeed = speed * player.NumPuzzlesComplete() + speed * player.NumWordsPlaced();
 
         workingSpeed = workingSpeed + (targetSpeed - workingSpeed) / 60f;
 
         if (transform.position.x > leftX)
         {
+            //Debug.Log("workingSpeed: " + workingSpeed+ ", targetSpeed: " + targetSpeed + ", "+ player.NumWordsPlaced()+" words placed.");
             // move left at a speed determined by the number of words placed
             transform.position = new Vector3(transform.position.x - workingSpeed, transform.position.y, transform.position.z);
             //transform.position = new Vector3(transform.position.x - speed * player.NumWordsCorrect(), transform.position.y, transform.position.z);

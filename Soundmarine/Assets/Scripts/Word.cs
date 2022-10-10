@@ -12,6 +12,7 @@ public class Word : MonoBehaviour
     private DropSpot spot = null;
     private DropSpot prevSpot = null;
     private DropDot dot = null;
+    private DropDot prevDot = null;
     private Vector3 wordScale;
 
     private Color offColor = new Color(1f, 1f, 1f, 1f);
@@ -69,9 +70,21 @@ public class Word : MonoBehaviour
             
             foreach(Transform t in transform)
             {
-                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.position.x*12f), t.localPosition.z);
+                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.localPosition.x*12f), t.localPosition.z);
             }
         }
+    }
+
+    public void PickUp()
+    {
+        gameObject.GetComponent<IdleWobble>().enabled = false;
+        gameObject.transform.rotation = Quaternion.identity;
+    }
+
+    public void PutDown()
+    {
+        gameObject.GetComponent<IdleWobble>().enabled = true;
+        gameObject.GetComponent<IdleWobble>().ResetPos();
     }
 
     public void Speak()
@@ -95,9 +108,14 @@ public class Word : MonoBehaviour
     }
     public void ClearSpot()
     {
+        Debug.Log("/" + wordText + "/ clearing spot, spot " + (spot == null ? "NULL" : spot.gameObject.name)+", dot "+ (dot == null ? "NULL" : dot.gameObject.name));
+
         prevSpot = spot;
+        prevDot = dot;
         spot = null;
         dot = null;
+
+        Debug.Log("//"+wordText + "// cleared, prevSpot now " + (prevSpot == null ? "NULL" : prevSpot.gameObject.name)+", prevDot now " + (prevDot == null ? "NULL" : prevDot.gameObject.name));
     }
 
     public DropSpot GetSpot()
@@ -108,7 +126,10 @@ public class Word : MonoBehaviour
     {
         return prevSpot;
     }
-
+    public DropDot GetLastDot()
+    {
+        return prevDot;
+    }
     public void Highlight()
     {
         //transform.GetChild(0).GetComponent<Renderer>().material.color = onColor;

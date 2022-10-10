@@ -70,7 +70,7 @@ public class Fish : MonoBehaviour
 
     public void SpawnAt(float spawnX, float spawnY, float spawnZ, int spawnDir, float spawnSpeed)
     {
-        Debug.Log("spawning " + gameObject.name + " at x " + spawnX + ", y " + spawnY + ", z " + spawnZ + ", dir " + spawnDir + ", speed " + spawnSpeed);
+        //Debug.Log("spawning " + gameObject.name + " at x " + spawnX + ", y " + spawnY + ", z " + spawnZ + ", dir " + spawnDir + ", speed " + spawnSpeed);
         transform.localPosition = new Vector3(spawnX, spawnY, spawnZ);
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x)* spawnDir, transform.localScale.y, transform.localScale.z);
         baselineX = spawnX;
@@ -99,12 +99,12 @@ public class Fish : MonoBehaviour
     {
         if (released)
         {
-            Debug.Log(gameObject.name + " released! " + following + ", " + entering + ", "+rising+", speed " + speed+" y "+ transform.position.y);
+            //Debug.Log(gameObject.name + " released! " + following + ", " + entering + ", "+rising+", speed " + speed+" y "+ transform.position.y);
 
             speed += releaseAcceleration;
             if(Mathf.Abs(transform.position.x - releaseX) > 3f)
             {
-                Debug.Log(gameObject.name + "far enough away and deactivating ( "+transform.position.x+" VS "+releaseX+" )");
+                //Debug.Log(gameObject.name + "far enough away and deactivating ( "+transform.position.x+" VS "+releaseX+" )");
                 gameObject.SetActive(false);
             }
         }
