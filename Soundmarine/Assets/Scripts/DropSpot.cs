@@ -17,14 +17,18 @@ public class DropSpot : MonoBehaviour
 
     private Vector3 centerDotPos;
 
+    private Player player;
+
     public void Init()
     {
+        player = GameObject.Find("puzzle").GetComponent<Player>();
+
         spotWidth = WidthOf(gameObject);
         spotLeftEdgeX = transform.localPosition.x - spotWidth / 2;
 
         centerDotPos = new Vector3(transform.localPosition.x, transform.localPosition.y - 0.001f, transform.localPosition.z - 0.000001f);
 
-        Transform spots = GameObject.Find("puzzle").GetComponent<Player>().GetSpotSet();
+        Transform spots = player.GetSpotSet();
         for (int i = 0; i < targetWords.Count; i++)
         {
             GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
@@ -33,6 +37,7 @@ public class DropSpot : MonoBehaviour
             dot.transform.localScale = 0.0015f * Vector3.one;
             dot.transform.localPosition = centerDotPos;
             dot.transform.parent = spots;
+            dot.GetComponent<DropDot>().spot = gameObject.GetComponent<DropSpot>();
             dot.GetComponent<DropDot>().SetTargetWord(targetWords[i]);
             dot.GetComponent<DropDot>().SetObj(null);
         }
@@ -123,7 +128,9 @@ public class DropSpot : MonoBehaviour
         {
             StartCoroutine(ReplaceDislodgedWordAfter(placedWord, word, 0f));
         }
-        
+
+        player.ColorWords();
+
         return true;
     }
 
@@ -139,8 +146,10 @@ public class DropSpot : MonoBehaviour
         }
     }
 
+
     public void ClearWord(Word w, bool andReset, bool andRespace)
     {
+        w.Yellow();
         if (w.Correct())
         {
             GameObject.Find("GameManager").GetComponent<FollowingFish>().Fewer();
@@ -175,7 +184,7 @@ public class DropSpot : MonoBehaviour
             w.gameObject.GetComponent<IdleWobble>().enabled = true;
             w.gameObject.GetComponent<IdleWobble>().ResetPos();
         }
-       
+        player.ColorWords();
     }
 
     public List<Word> GetWords()

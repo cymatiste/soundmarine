@@ -62,7 +62,7 @@ public class FollowingFish : MonoBehaviour
         {
             // to do: re-collect free fish here when they exist instead of spawning them 
             Fish newFish = generator.SpawnSingleFish(theSub);
-            newFish.transform.localScale = newFish.transform.localScale * Random.Range(0.25f, 0.35f);
+            newFish.transform.localScale = newFish.transform.localScale * Random.Range(0.15f, 0.35f);
             Vector3 subPos = theSub.position;
             //newFish.SpawnAt(subPos.x + Random.Range(minX, maxX), subPos.y + Random.Range(minY, maxY), subPos.z + Random.Range(minZ, maxZ), -1, 0f);
             float targetZ = Random.Range(0f, 1f) > 0.5f ? Random.Range(frontMinZ, frontMaxZ) : Random.Range(backMinZ, backMaxZ);

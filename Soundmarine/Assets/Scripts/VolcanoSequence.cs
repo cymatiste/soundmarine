@@ -46,7 +46,7 @@ public class VolcanoSequence : MonoBehaviour
     private float maxChestR = -3.89f;
     private float minArmsR = 0f;
     private float maxArmsR = 6.2f;
-    private float minHeadR = 35f;
+    private float minHeadR = 45f;
     private float maxHeadR = -35f;
     public GameObject dreamerChest;
     public GameObject dreamerHead;

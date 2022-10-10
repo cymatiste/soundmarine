@@ -5,6 +5,7 @@ using UnityEngine;
 public class DropDot : MonoBehaviour
 {
     private GameObject droppedObj = null;
+    public DropSpot spot;
     private string targetWord;
     private Light light;
 

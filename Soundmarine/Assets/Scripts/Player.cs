@@ -35,7 +35,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
     public void InitPuzzle(int set)
     {
         puzzleNum = set;
@@ -76,6 +75,76 @@ public class Player : MonoBehaviour
     public Transform GetSpotSet()
     {
         return spotSets[puzzleNum];
+    }
+
+    public List<DropSpot> GetActiveSpots()
+    {
+        return spots;
+    }
+
+    public void ColorWords()
+    {
+        
+        foreach(DropDot dot in dots)
+        {
+            if(dot.GetObj()== null)
+            {
+                continue;
+            }
+            Word word = dot.GetObj().GetComponent<Word>();
+            if (NumWordsPlaced() < dots.Count)
+            {
+                word.Yellow();
+            }
+            else
+            {
+
+
+
+                if (dot.Correct())
+                {
+                    word.Green();
+                }
+                else
+                {
+                    bool correctRow = false;
+                    bool correctPoem = false;
+                    foreach (string s in dot.spot.targetWords)
+                    {
+
+                        if (word.wordText == s)
+                        {
+                            correctRow = true;
+                            word.Blue();
+                        }
+                    }
+                    if (!correctRow)
+                    {
+                        foreach (DropSpot ds in spots)
+                        {
+                            if (ds != dot.spot)
+                            {
+                                foreach (string s in ds.targetWords)
+                                {
+                                    if (word.wordText == s)
+                                    {
+                                        correctPoem = true;
+                                        word.Violet();
+                                    }
+                                }
+                            }
+                        }
+                        if (!correctPoem)
+                        {
+                            word.Red();
+                        }
+                    }
+
+
+                }
+            }
+
+        }
     }
 
     void Update()

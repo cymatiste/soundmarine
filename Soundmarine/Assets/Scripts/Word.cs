@@ -60,6 +60,95 @@ public class Word : MonoBehaviour
         return ( mood == HAPPIEST );
     }
 
+    public void Green()
+    {
+        GreenChildrenOf(transform);
+    }
+
+    private void GreenChildrenOf(Transform parentT)
+    {
+        foreach (Transform t in parentT)
+        {
+            MeshRenderer mr = t.gameObject.GetComponent<MeshRenderer>();
+            if (t.gameObject.name != "effect" && mr != null)
+            {
+                mr.material.color = new Color(0.33f, 0.8f, 0.2f, 1);
+            }
+            GreenChildrenOf(t);
+        }
+    }
+
+    public void Blue()
+    {
+        BlueChildrenOf(transform);
+    }
+
+    private void BlueChildrenOf(Transform parentT)
+    {
+        foreach (Transform t in parentT)
+        {
+            MeshRenderer mr = t.gameObject.GetComponent<MeshRenderer>();
+            if (t.gameObject.name != "effect" && mr != null)
+            {
+                mr.material.color = new Color(0.1f, 0.67f, 1f, 1);
+            }
+            BlueChildrenOf(t);
+        }
+    }
+
+    public void Violet()
+    {
+        VioletChildrenOf(transform);
+    }
+
+    private void VioletChildrenOf(Transform parentT)
+    {
+        foreach (Transform t in parentT)
+        {
+            MeshRenderer mr = t.gameObject.GetComponent<MeshRenderer>();
+            if (t.gameObject.name != "effect" && mr != null)
+            {
+                mr.material.color = new Color(1f, 0.1f, 1f, 1);
+            }
+            VioletChildrenOf(t);
+        }
+    }
+
+    public void Red()
+    {
+        RedChildrenOf(transform);
+    }
+
+    private void RedChildrenOf(Transform parentT)
+    {
+        foreach (Transform t in parentT)
+        {
+            MeshRenderer mr = t.gameObject.GetComponent<MeshRenderer>();
+            if (t.gameObject.name != "effect" && mr != null)
+            {
+                mr.material.color = new Color(0.9f, 0.1f, 0.1f, 1);
+            }
+            RedChildrenOf(t);
+        }
+    }
+
+    public void Yellow()
+    {
+        YellowChildrenOf(transform);   
+    }
+
+    private void YellowChildrenOf(Transform parentT)
+    {
+        foreach (Transform t in parentT)
+        {
+            MeshRenderer mr = t.gameObject.GetComponent<MeshRenderer>();
+            if (t.gameObject.name != "effect" && mr != null)
+            {
+                mr.material.color = new Color(1, 0.67f, 0, 1);
+            }
+            YellowChildrenOf(t);
+        }
+    }
 
 
     // Update is called once per frame
@@ -70,7 +159,7 @@ public class Word : MonoBehaviour
             
             foreach(Transform t in transform)
             {
-                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.localPosition.x*12f), t.localPosition.z);
+                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.position.x*12f), t.localPosition.z);
             }
         }
     }
