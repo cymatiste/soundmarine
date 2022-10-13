@@ -22,6 +22,7 @@ public class FollowingFish : MonoBehaviour
     private float backMaxZ = 0.06f;
     private SubControl subControl;
     private GameObject sub;
+    private bool endGame;
 
     private int BUMP_NUMBER = 9;
 
@@ -30,6 +31,11 @@ public class FollowingFish : MonoBehaviour
     {
         sub = GameObject.Find("miniSub");
         subControl = sub.GetComponent<SubControl>();
+    }
+
+    public void EndGame()
+    {
+        endGame = true;
     }
 
     public void More()
@@ -66,6 +72,14 @@ public class FollowingFish : MonoBehaviour
             Vector3 subPos = theSub.position;
             //newFish.SpawnAt(subPos.x + Random.Range(minX, maxX), subPos.y + Random.Range(minY, maxY), subPos.z + Random.Range(minZ, maxZ), -1, 0f);
             float targetZ = Random.Range(0f, 1f) > 0.5f ? Random.Range(frontMinZ, frontMaxZ) : Random.Range(backMinZ, backMaxZ);
+            if (endGame)
+            {
+                targetZ = Random.Range(backMinZ, backMaxZ);
+                minX = -0.25f;
+                maxX = 0.25f;
+                minY = -0.1f;
+                maxY = 0.2f;
+            }
             newFish.SpawnAt(Random.Range(minX, maxX), Random.Range(minY, maxY), targetZ, -1, 0f);
             newFish.Follow(true);
             newFish.name = "fishy" + followingFish.Count;
@@ -73,7 +87,7 @@ public class FollowingFish : MonoBehaviour
         }
     }
 
-    private void Release(Fish f)
+    public void Release(Fish f)
     {
         followingFish.Remove(f);
         freeFish.Add(f);

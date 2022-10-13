@@ -10,10 +10,12 @@ public class DropDot : MonoBehaviour
     private Light light;
 
 
-    private void Start()
+    public void Init()
     {
+        //Debug.Log(" dot Init " + gameObject.name);
         light = transform.Find("Point Light").GetComponent<Light>();
         light.intensity = 0f;
+        //Debug.Log("dot light " + gameObject.name + ": " + light);
     }
     public void SetTargetWord(string tw)
     {
@@ -41,7 +43,7 @@ public class DropDot : MonoBehaviour
     }
     public bool Correct()
     {
-        //Debug.Log("CORRECT? "+droppedObj.name + " text " + droppedObj.GetComponent<Word>().wordText + " == " + targetWord + " ---> " + (droppedObj.GetComponent<Word>().wordText == targetWord));
+        ////Debug.Log("CORRECT? "+droppedObj.name + " text " + droppedObj.GetComponent<Word>().wordText + " == " + targetWord + " ---> " + (droppedObj.GetComponent<Word>().wordText == targetWord));
         return (droppedObj.GetComponent<Word>().wordText == targetWord);
     }
 }

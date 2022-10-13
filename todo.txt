@@ -1,7 +1,13 @@
 TO DO
 
-- assign Elise's instruments for all puzzles! (I thought I did this)
 - Finale
+
+- little whale progress icons?
+- clickable fish?
+- LOTS OF BUBBLES ON EXIT CAVE
+- add a whale pod chilling in the background during finale
+
+BUBBLES TO HIDE QUICK JUMP CUT TO EXIT CAVE
 
 - Add (?) help button and screen
 - play new VO
@@ -10,24 +16,20 @@ TO DO
 - check for each puzzle:
 	- width height and x positioning of each row
 	- size of each word
-	- colliders
+	- colliders (too wide on puzzle 5)
 	- punctuation
+	- instrument assignments?
+	- timing of notes
 
 - remove repeat notes in puzzle 2
-- puzzle 4 too slow
-- remove "it", just "sheds its dead", 
 - add comma after shakes,
+
+- can't pick up IT 
 
 - gaps between in and out breath
 - the effects are leaving little pixels on the corner
-- fish schools look pretty tightly horizontally packed (lines)
 
 - camera angle / words placement more evenly around sub
-
-- uneven sizes on words on puzzle 1
-- space out puzzle 1 rows more vertically?
-- space puzzle 3 words together more closely horizontally
-- make puzzle 2 words larger where possible?
 
 - transition in new puzzle word groups
 - add cave (- adjust left edge, add something behind it, duplicate cave on the right for exiting, double cave for looping inside.
@@ -38,9 +40,5 @@ TO DO
 
 - snappier transitions
 
-- parallel rows should count as single rows for colouring
-
--2.613764
-
 BUG:
-- where did FROM go at the end?
+- VERY HARD to pick up small words near the end ...???

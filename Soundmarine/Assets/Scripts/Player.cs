@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
-    public List<Transform> spotSets;
-    public List<float> loopSeconds;
-    public List<float> loopBeats;
+    public Transform spotSet;
+    public Transform finishedSet;
+    //public List<float> loopSeconds;
+    //public List<float> loopBeats;
+    public float loopSeconds;
+    public float loopBeats;
     public AudioSource beat1;
     public AudioSource beat2;
     public bool playing = false;
@@ -22,17 +24,13 @@ public class Player : MonoBehaviour
     private List<DropDot> dots;
     private int puzzleNum;
     private int numPuzzlesComplete;
-
+    private bool activePuzzle;
 
     private List<Word> words;
 
     void Start()
     {
         playing = false;
-        foreach(Transform t in spotSets)
-        {
-            t.gameObject.SetActive(false);
-        }
     }
 
     public void InitPuzzle(int set)
@@ -42,13 +40,14 @@ public class Player : MonoBehaviour
         dots = new();
         words = new();
         lastRun = false;
-        for (int i = 0; i < spotSets.Count; i++)
+        activePuzzle = true;
+
+        spotSet.gameObject.SetActive(true);
+        spotSet.transform.localPosition = new Vector3(0, 0, 0);
+
+        foreach (Transform t in spotSet)
         {
-            spotSets[i].gameObject.SetActive(i==puzzleNum);
-        }
-        foreach (Transform t in spotSets[puzzleNum])
-        {
-            if(t.gameObject != null && t.gameObject.GetComponent<DropSpot>() != null)
+            if(t.gameObject.GetComponent<DropSpot>() != null)
             {
                 spots.Add(t.gameObject.GetComponent<DropSpot>());
             }
@@ -63,8 +62,55 @@ public class Player : MonoBehaviour
                 dots.Add(d.GetComponent<DropDot>());
             }
         }
-        Debug.Log("added " + dots.Count + " dots");
         playing = true;
+    }
+
+    public void InitFinal()
+    {
+        List<Word> finalWords = new();
+        spotSet.gameObject.SetActive(true);
+        foreach (DropSpot ds in spots)
+        {
+            foreach(Word w in ds.GetWords())
+            {
+                finalWords.Add(w);
+                GameObject bgFuzz = (GameObject)GameObject.Instantiate(Resources.Load("fuzzball"),w.transform);
+                bgFuzz.transform.localPosition = new Vector3(0f, 0f, 0.1f);
+
+            }
+            ds.gameObject.SetActive(false);
+        }
+
+        DropSpot finalSpot = finishedSet.Find("Row").GetComponent<DropSpot>();
+        finalSpot.Init();
+        StartCoroutine(PrepopulateOneByOne(finalSpot, finalWords));
+        activePuzzle = false;
+        playing = true;
+        lastRun = false;
+        
+    }
+
+
+    private IEnumerator PrepopulateOneByOne(DropSpot spot, List<Word> testWords)
+    {
+        Debug.Log("Prepopulating " + spot.gameObject.name);
+        for(int i=0; i<testWords.Count; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+            testWords[i].PickUp();
+            spot.PlaceWordAt(testWords[i], spot.GetDots()[i].transform.position, false);
+            testWords[i].Wave(true);
+        }
+        spots = new();
+        dots = new();
+        spots.Add(spot);
+        foreach (GameObject d in spot.GetDots())
+        {
+            dots.Add(d.GetComponent<DropDot>());
+            d.GetComponent<MeshRenderer>().enabled = false;
+        }
+        spotSet = finishedSet;
+        ColorWords();
     }
 
     public int NumPuzzlesComplete()
@@ -74,7 +120,7 @@ public class Player : MonoBehaviour
 
     public Transform GetSpotSet()
     {
-        return spotSets[puzzleNum];
+        return spotSet;
     }
 
     public List<DropSpot> GetActiveSpots()
@@ -84,7 +130,6 @@ public class Player : MonoBehaviour
 
     public void ColorWords()
     {
-        
         foreach(DropDot dot in dots)
         {
             if(dot.GetObj()== null)
@@ -92,15 +137,19 @@ public class Player : MonoBehaviour
                 continue;
             }
             Word word = dot.GetObj().GetComponent<Word>();
+
+            if (!activePuzzle)
+            {
+                word.Yellow();
+                continue;
+            }
+
             if (NumWordsPlaced() < dots.Count)
             {
                 word.Yellow();
             }
             else
             {
-
-
-
                 if (dot.Correct())
                 {
                     word.Green();
@@ -153,16 +202,20 @@ public class Player : MonoBehaviour
         {
             return;
         }
-  
 
-        if (loopTimer > loopSeconds[puzzleNum])
+
+        if (loopTimer > loopSeconds)
         {
             loopIndex = 0;
             loopTimer = 0f;
 
-            Debug.Log(NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
+            if (activePuzzle)
+            {
+                Debug.Log("LOOP. "+NumWordsCorrect() + " correct out of " + dots.Count + ", " + words.Count + " placed.");
+            }
 
-            if (NumWordsCorrect() == dots.Count)
+
+            if (activePuzzle && NumWordsCorrect() == dots.Count)
             {
                 if (!lastRun)
                 {
@@ -176,13 +229,17 @@ public class Player : MonoBehaviour
                         spot.gameObject.SetActive(false);
                     }
                     */
-                    spotSets[puzzleNum].gameObject.SetActive(false);
+                    Debug.Log(gameObject.name + " reporting PuzzleComplete");
+                     
+
+                    spotSet.transform.position = new Vector3(spotSet.transform.position.x, 10f, spotSet.transform.position.z);
                     numPuzzlesComplete++;
                     GameObject.Find("GameManager").GetComponent<GameManager>().PuzzleComplete();
                     lastRun = true;
                 } else
                 {
                     playing = false;
+                    activePuzzle = false;
                     return;
                 }
                
@@ -193,7 +250,7 @@ public class Player : MonoBehaviour
         }
 
         int targetIndex = loopIndex;
-        if ((loopTimer / loopSeconds[puzzleNum]) * loopBeats[puzzleNum] * 2 >= targetIndex)
+        if ((loopTimer / loopSeconds) * loopBeats * 2 >= targetIndex)
         {
             //Debug.Log("*** " + loopIndex + ", " + loopTimer+", "+dots+", playing ? "+playing);
             AudioSource beat = (loopIndex % 2 == 0) ? beat1 : beat2;
@@ -214,7 +271,10 @@ public class Player : MonoBehaviour
                     {
                         PlayWord(activeDot.GetObj().GetComponent<Word>());
                     }
-                    activeDot.Highlight();
+                    if (activePuzzle)
+                    {
+                        activeDot.Highlight();
+                    }
                     prevDot = activeDot;
                     //Debug.Log("   ** highlighting " + activeDot.name);
                 }
@@ -237,13 +297,30 @@ public class Player : MonoBehaviour
         loopTimer += Time.deltaTime;
     }
 
+    public void ResetLoop()
+    {
+        loopIndex = 0;
+        loopTimer = 0f;
+    }
+
+    public void PlayLoop(bool isPuzzleActive)
+    {
+        spotSet.gameObject.SetActive(true);
+        ResetLoop();
+        playing = true;
+        activePuzzle = isPuzzleActive;
+    }
     private void PlayWord(Word word)
     {
         if (word != null)
         {
             words.Add(word);
             //Debug.Log("))):  " + word.name);
-            word.Highlight();
+            if (activePuzzle)
+            {
+                word.Highlight(activePuzzle);
+            }
+           
             if (!word.GetComponent<AudioSource>().isPlaying)
             {
                 word.Speak();
@@ -253,9 +330,9 @@ public class Player : MonoBehaviour
                 word.Wave();
             }
 
-            if (prevWord != null)
+            if (prevWord != null && activePuzzle)
             {
-                prevWord.UnHighlight();
+                prevWord.UnHighlight(activePuzzle);
                 prevDot.UnHighlight();
             }
             prevWord = word;

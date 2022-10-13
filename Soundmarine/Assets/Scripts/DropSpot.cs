@@ -17,11 +17,10 @@ public class DropSpot : MonoBehaviour
 
     private Vector3 centerDotPos;
 
-    private Player player;
+    public Player player;
 
     public void Init()
     {
-        player = GameObject.Find("puzzle").GetComponent<Player>();
 
         spotWidth = WidthOf(gameObject);
         spotLeftEdgeX = transform.localPosition.x - spotWidth / 2;
@@ -33,10 +32,11 @@ public class DropSpot : MonoBehaviour
         {
             GameObject dot = (GameObject)Instantiate(Resources.Load("dropDot"));
             dot.name = gameObject.name + "_dot_" + i;
-            dots.Add(dot);
+                        dots.Add(dot);
             dot.transform.localScale = 0.0015f * Vector3.one;
             dot.transform.localPosition = centerDotPos;
             dot.transform.parent = spots;
+            dot.GetComponent<DropDot>().Init();
             dot.GetComponent<DropDot>().spot = gameObject.GetComponent<DropSpot>();
             dot.GetComponent<DropDot>().SetTargetWord(targetWords[i]);
             dot.GetComponent<DropDot>().SetObj(null);
@@ -54,7 +54,7 @@ public class DropSpot : MonoBehaviour
     }
     public bool PlaceWordAt(Word word, Vector3 clickPos, bool replacing = false)
     {
-        Debug.Log("Place /"+word.wordText+"/ at "+clickPos);
+        //Debug.Log("Place /"+word.wordText+"/ at "+clickPos);
 
         Vector3 targetPos = new Vector3(clickPos.x, transform.localPosition.y, transform.localPosition.z - 0.012f);
 
@@ -68,11 +68,13 @@ public class DropSpot : MonoBehaviour
             ClearWord(placedWord, true, true);
         } else if (closestDot.GetObj() != null)
         {
+            Debug.Log("!!! THIS SHOULD NEVER HAPPEN");
             word.PutDown();
             return false;
         }
 
         closestDot.SetObj(word.gameObject);
+        word.SetSpot(gameObject.GetComponent<DropSpot>());
         word.SetDot(closestDot);
         if (closestDot.Correct())
         {
@@ -280,7 +282,7 @@ public class DropSpot : MonoBehaviour
 
         float spaceBetween = (spotWidth - combinedObjectsWidth) / (objects.Count + 1);
 
-        Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
+        //Debug.Log("placing " + objects.Count + " items with " + spaceBetween + " between");
         for (int i = 0; i < objects.Count; i++)
         {
             //Debug.Log(" : item "+i+" is ")
@@ -328,7 +330,7 @@ public class DropSpot : MonoBehaviour
             if (widest[i] != dots[i])
             {
                 widest[i].transform.localPosition = new Vector3(newTargetX, transform.localPosition.y, transform.localPosition.z - 0.002f);
-                Debug.Log("SAE moving " + widest[i].name + " to " + widest[i].transform.localPosition);
+                //Debug.Log("SAE moving " + widest[i].name + " to " + widest[i].transform.localPosition);
             } 
             dots[i].transform.localPosition = new Vector3(newTargetX, centerDotPos.y, centerDotPos.z);
 

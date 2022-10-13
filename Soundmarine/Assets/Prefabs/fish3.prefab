@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 107123868790937414}
   - component: {fileID: 107123868790937272}
   - component: {fileID: 107123868790937273}
+  - component: {fileID: 8928916325779450466}
   m_Layer: 0
   m_Name: fish3
-  m_TagString: Untagged
+  m_TagString: fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,3 +98,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fec422844bf9a734098a18919ecfe879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiltVariance: 0
+--- !u!65 &8928916325779450466
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107123868790937415}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 7.31, y: 3.59, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}

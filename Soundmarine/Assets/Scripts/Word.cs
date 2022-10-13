@@ -22,7 +22,10 @@ public class Word : MonoBehaviour
     private int UNHAPPY = 0;
     private int mood = 0;
     private bool waving = false;
-      
+    public float waveHeight = 0.05f;
+    public float waveSpeed = 1f;
+    public float waveFrequency = 12f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -156,10 +159,10 @@ public class Word : MonoBehaviour
     {
         if (waving)
         {
-            
-            foreach(Transform t in transform)
+
+            foreach (Transform t in transform)
             {
-                t.localPosition = new Vector3(t.localPosition.x, 0.05f * Mathf.Sin(Time.time*6f + t.position.x*12f), t.localPosition.z);
+                t.localPosition = new Vector3(t.localPosition.x, waveHeight * Mathf.Sin(Time.time * 6f * waveSpeed + transform.localPosition.x * waveFrequency), t.localPosition.z);
             }
         }
     }
@@ -219,7 +222,7 @@ public class Word : MonoBehaviour
     {
         return prevDot;
     }
-    public void Highlight()
+    public void Highlight(bool active = true)
     {
         //transform.GetChild(0).GetComponent<Renderer>().material.color = onColor;
         
@@ -239,14 +242,21 @@ public class Word : MonoBehaviour
             transform.localScale = 0.9f * wordScale;
         }
     }
-    public void UnHighlight()
+    public void UnHighlight(bool active = true)
     {
         //transform.GetChild(0).GetComponent<Renderer>().material.color = offColor;
         transform.localScale = new Vector3(wordScale.x, wordScale.y, wordScale.z);
     }
 
-    public void Wave()
+    public void Wave(bool endGame = false)
     {
         waving = true;
+        if (endGame)
+        {
+            Debug.Log("ENDGAME WAVE");
+            waveHeight = 0.5f;
+            waveFrequency = 20f;
+            waveSpeed = 0.05f;
+        }
     }
 }

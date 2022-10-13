@@ -42,7 +42,10 @@ public class Grabber : MonoBehaviour
                 {
                     RaycastHit hit = hits[i];
 
-                    if (hit.collider != null && hit.collider.CompareTag("drag"))
+                    if (hit.collider != null && hit.collider.CompareTag("fish"))
+                    {
+                        hit.collider.gameObject.GetComponent<Fish>().Wobble();
+                    } else if (hit.collider != null && hit.collider.CompareTag("drag"))
                     {
                         selectedObject = hit.collider.gameObject;
                         dragPoint = selectedObject.transform.position - hit.point;
@@ -53,11 +56,11 @@ public class Grabber : MonoBehaviour
                         DropDot dd = selectedObject.GetComponent<Word>().GetDot();
 
 
-                        Debug.Log("Picking up: " + selectedObject);
-                        Debug.Log("          , spot: " + (ds == null ? "NULL" : ds.gameObject.name));
-                        Debug.Log("          , dot: " + (dd == null ? "NULL" : dd.gameObject.name));
-                        Debug.Log("          , prevSpot: " + (lds == null ? "NULL" : lds.gameObject.name));
-                        Debug.Log("          , prevDot: " + (ldd == null ? "NULL" : ldd.gameObject.name));
+                        //Debug.Log("Picking up: " + selectedObject);
+                        //Debug.Log("          , spot: " + (ds == null ? "NULL" : ds.gameObject.name));
+                        //Debug.Log("          , dot: " + (dd == null ? "NULL" : dd.gameObject.name));
+                        //Debug.Log("          , prevSpot: " + (lds == null ? "NULL" : lds.gameObject.name));
+                        //Debug.Log("          , prevDot: " + (ldd == null ? "NULL" : ldd.gameObject.name));
 
                         selectedObject.GetComponent<Word>().PickUp();
 

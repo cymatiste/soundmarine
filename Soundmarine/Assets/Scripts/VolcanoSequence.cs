@@ -23,6 +23,7 @@ public class VolcanoSequence : MonoBehaviour
 
     public GameObject inBtn;
     public GameObject outBtn;
+    
     public GameObject instructions;
 
     public ParticleSystem rings;
@@ -93,6 +94,7 @@ public class VolcanoSequence : MonoBehaviour
 
         dreamerStartScale = dreamer.transform.localScale;
 
+        
         inBtn.SetActive(false);
         outBtn.SetActive(false);
 
